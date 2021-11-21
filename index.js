@@ -3,6 +3,7 @@ const mongoose = require('mongoose')
 const dotenv = require('dotenv')
 const helmet = require('helmet')
 const morgan = require('morgan')
+
 const userRoute = require('./routes/users')
 const authRoute = require('./routes/auth')
 
@@ -18,16 +19,16 @@ mongoose.connect(process.env.MONGO_URL, {useNewUrlParser: true}, (err) => {
 
 const app = express()
 
-// Middleware
+// Middlewares
 app.use(express.json())
 app.use(helmet())
 app.use(morgan('common'))
 
-app.get('/', (req, res) => {
+app.get('/', (_, res) => {
     res.send("Welcome to homepage")
 })
 
-app.get('/users', (req, res) => {
+app.get('/users', (_, res) => {
     res.send("Welcome to user page")
 })
 
