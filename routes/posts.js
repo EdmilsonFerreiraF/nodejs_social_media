@@ -1,4 +1,5 @@
 const Post = require('../models/Post')
+const User = require('../models/User')
 
 const router = require('express').Router()
 
@@ -85,6 +86,26 @@ router.put('/:id/like', async (req, res) => {
 
             res.status(200).json("The post has been disliked")
         }
+    } catch (err) {
+        res.status(500).json(err)
+    }
+})
+
+// Get timeline posts
+router.get('/', async (req, res) => {
+    try {
+        const { userId } = req.body
+
+        const currentUser = await User.findById({ "_id": userId })
+
+        const userPosts = await Post.find({ userId: currentUser._id})
+        const followingPosts = await Promise.all(
+            currentUser.following.map(followingId => {
+                Post.find({ userId: followingId })
+            })
+        )
+
+        res.json(userPosts.concat(...followingPosts))
     } catch (err) {
         res.status(500).json(err)
     }
