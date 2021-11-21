@@ -15,6 +15,19 @@ router.post('/', async (req, res) => {
     }
 })
 
+// Get a post
+router.get('/:id', async (req, res) => {
+    try {
+        const { id } = req.params
+
+        const post = await Post.findById({ "_id": id })
+
+        res.status(200).json(post)
+    } catch (err) {
+        res.status(500).json(err)
+    }
+})
+
 // Update a post
 router.put('/:id', async (req, res) => {
     try {
@@ -50,6 +63,28 @@ router.delete('/:id', async (req, res) => {
         await post.deleteOne({ $set: req.body })
 
         res.status(200).json("The post has been deleted")
+    } catch (err) {
+        res.status(500).json(err)
+    }
+})
+
+// Like/dislike a post
+router.put('/:id/like', async (req, res) => {
+    try {
+        const { id } = req.params
+        const { userId } = req.body
+
+        const post = await Post.findById({ "_id": id })
+
+        if (!post.likes.includes(userId)) {
+            await post.updateOne({ $push: { likes: userId } })
+
+            res.status(200).json("The post has been liked")
+        } else {
+            await post.updateOne({ $pull: { likes: userId } })
+
+            res.status(200).json("The post has been disliked")
+        }
     } catch (err) {
         res.status(500).json(err)
     }
