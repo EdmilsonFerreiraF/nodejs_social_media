@@ -4,8 +4,9 @@ const dotenv = require('dotenv')
 const helmet = require('helmet')
 const morgan = require('morgan')
 
-const userRoute = require('./routes/users')
+const usersRoute = require('./routes/users')
 const authRoute = require('./routes/auth')
+const postsRoute = require('./routes/posts')
 
 dotenv.config()
 
@@ -32,8 +33,9 @@ app.get('/users', (_, res) => {
     res.send("Welcome to user page")
 })
 
-app.use('/api/users', userRoute)
+app.use('/api/users', usersRoute)
 app.use('/api/auth', authRoute)
+app.use('/api/posts', postsRoute)
 
 app.listen(4000, () => {
     console.log("Backend server is running!")
