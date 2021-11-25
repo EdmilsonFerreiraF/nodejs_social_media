@@ -46,11 +46,13 @@ router.delete('/:id', async(req, res) => {
 })
 
 // Get user
-router.get('/:id', async(req, res) => {
-    const { id } = req.params
+router.get('/', async(req, res) => {
+    const { userId, username } = req.query
 
     try {
-        const user = await User.findOne({ id })
+        const user = userId 
+        ? await User.findById({ "_id": userId }) 
+        : await User.findOne({ username })
 
         const { password, updatedAt, ...otherData } = user._doc
         

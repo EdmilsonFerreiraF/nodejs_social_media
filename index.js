@@ -3,7 +3,7 @@ const mongoose = require('mongoose')
 const dotenv = require('dotenv')
 const helmet = require('helmet')
 const morgan = require('morgan')
-
+const cors = require('cors')
 const usersRoute = require('./routes/users')
 const authRoute = require('./routes/auth')
 const postsRoute = require('./routes/posts')
@@ -22,6 +22,7 @@ const app = express()
 
 // Middlewares
 app.use(express.json())
+app.use(cors())
 app.use(helmet())
 app.use(morgan('common'))
 

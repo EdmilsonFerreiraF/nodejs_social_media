@@ -92,20 +92,39 @@ router.put('/:id/like', async (req, res) => {
 })
 
 // Get timeline posts
-router.get('/', async (req, res) => {
+router.get('/timeline/:userId', async (req, res) => {
     try {
-        const { userId } = req.body
+        const { userId } = req.params
 
-        const currentUser = await User.findById({ "_id": userId })
+        const currentUser = await User.findById( userId )
 
-        const userPosts = await Post.find({ userId: currentUser._id})
+        const userPosts = await Post.find({ userId: currentUser._id })
         const followingPosts = await Promise.all(
             currentUser.following.map(followingId => {
-                Post.find({ userId: followingId })
+                return Post.find({ userId: followingId })
             })
         )
 
-        res.json(userPosts.concat(...followingPosts))
+        console.log("currentUser", currentUser)
+
+        console.log("userPosts", userPosts)
+        console.log("followingPosts", followingPosts)
+
+        res.status(200).json(userPosts.concat(...followingPosts))
+    } catch (err) {
+        res.status(500).json(err)
+    }
+})
+
+// Get user posts
+router.get('/profile/:username', async (req, res) => {
+    try {
+        const { username } = req.params
+
+        const user = await User.findOne({ username })
+        const posts = await Post.find({ userId: user._id })
+        
+        res.status(200).json(posts)
     } catch (err) {
         res.status(500).json(err)
     }
