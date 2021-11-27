@@ -1,17 +1,39 @@
+const router = require('express').Router()
+
 const Post = require('../models/Post')
 const User = require('../models/User')
 
-const router = require('express').Router()
+const TokenGenerator = require('../services/tokenGenerator')
+const IdGenerator = require('../services/idGenerator')
+
+const tokenGenerator = new TokenGenerator()
+const idGenerator = new IdGenerator()
 
 // Create a post
 router.post('/', async (req, res) => {
     try {
-        const newPost = new Post(req.body)
+        const { description, image } = req.body
+        const token = req.headers.authorization
+        
+        if (!token) {
+            res.status(417).send("Missing token");
+        };
+
+        const isTokenValid = tokenGenerator.verify(token.includes("Bearer ") ? token.replace("Bearer ", "") : token);
+      
+        if (!isTokenValid) {
+            res.status(409).send("Invalid token");
+        }
+
+        const id = idGenerator.generate();
+
+        const newPost = new Post({ id, userId: isTokenValid.id, description, image })
 
         const savedPost = await newPost.save()
 
         res.status(200).json(savedPost)
     } catch (err) {
+        console.log(err)
         res.status(500).json(err)
     }
 })
@@ -20,8 +42,19 @@ router.post('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
     try {
         const { id } = req.params
+        const token = req.headers.authorization
+        
+        if (!token) {
+            res.status(417).send("Missing token");
+        };
 
-        const post = await Post.findById({ "_id": id })
+        const isTokenValid = tokenGenerator.verify(token.includes("Bearer ") ? token.replace("Bearer ", "") : token);
+      
+        if (!isTokenValid) {
+            res.status(409).send("Invalid token");
+        }
+
+        const post = await Post.findOne({ id })
 
         res.status(200).json(post)
     } catch (err) {
@@ -33,11 +66,21 @@ router.get('/:id', async (req, res) => {
 router.put('/:id', async (req, res) => {
     try {
         const { id } = req.params
-        const { userId } = req.body
+        const token = req.headers.authorization
+        
+        if (!token) {
+            res.status(417).send("Missing token");
+        };
 
-        const post = await Post.findById({ "_id": id })
+        const isTokenValid = tokenGenerator.verify(token.includes("Bearer ") ? token.replace("Bearer ", "") : token);
+      
+        if (!isTokenValid) {
+            res.status(409).send("Invalid token");
+        }
 
-        if (post.userId !== userId) {
+        const post = await Post.findOne({ id })
+
+        if (post.userId !== isTokenValid.id) {
             res.status(403).json("You can only update your own posts")
         }
 
@@ -53,11 +96,21 @@ router.put('/:id', async (req, res) => {
 router.delete('/:id', async (req, res) => {
     try {
         const { id } = req.params
-        const { userId } = req.body
+        const token = req.headers.authorization
+        
+        if (!token) {
+            res.status(417).send("Missing token");
+        };
 
-        const post = await Post.findById({ "_id": id })
+        const isTokenValid = tokenGenerator.verify(token.includes("Bearer ") ? token.replace("Bearer ", "") : token);
+      
+        if (!isTokenValid) {
+            res.status(409).send("Invalid token");
+        }
 
-        if (post.userId !== userId) {
+        const post = await Post.findOne({ id })
+
+        if (post.userId !== isTokenValid.id) {
             res.status(403).json("You can only delete your own posts")
         }
 
@@ -73,16 +126,26 @@ router.delete('/:id', async (req, res) => {
 router.put('/:id/like', async (req, res) => {
     try {
         const { id } = req.params
-        const { userId } = req.body
+        const token = req.headers.authorization
+        
+        if (!token) {
+            res.status(417).send("Missing token");
+        };
 
-        const post = await Post.findById({ "_id": id })
+        const isTokenValid = tokenGenerator.verify(token.includes("Bearer ") ? token.replace("Bearer ", "") : token);
+      
+        if (!isTokenValid) {
+            res.status(409).send("Invalid token");
+        }
 
-        if (!post.likes.includes(userId)) {
-            await post.updateOne({ $push: { likes: userId } })
+        const post = await Post.findOne({ id })
+
+        if (!post.likes.includes(isTokenValid.id)) {
+            await post.updateOne({ $push: { likes: isTokenValid.id } })
 
             res.status(200).json("The post has been liked")
         } else {
-            await post.updateOne({ $pull: { likes: userId } })
+            await post.updateOne({ $pull: { likes: isTokenValid.id } })
 
             res.status(200).json("The post has been disliked")
         }
@@ -95,20 +158,26 @@ router.put('/:id/like', async (req, res) => {
 router.get('/timeline/:userId', async (req, res) => {
     try {
         const { userId } = req.params
+        const token = req.headers.authorization
+        
+        if (!token) {
+            res.status(417).send("Missing token");
+        };
 
-        const currentUser = await User.findById( userId )
+        const isTokenValid = tokenGenerator.verify(token.includes("Bearer ") ? token.replace("Bearer ", "") : token);
+      
+        if (!isTokenValid) {
+            res.status(409).send("Invalid token");
+        }
 
-        const userPosts = await Post.find({ userId: currentUser._id })
+        const currentUser = await User.findOne({ id: userId })
+        const userPosts = await Post.find({ userId: currentUser.id })
+
         const followingPosts = await Promise.all(
             currentUser.following.map(followingId => {
                 return Post.find({ userId: followingId })
             })
         )
-
-        console.log("currentUser", currentUser)
-
-        console.log("userPosts", userPosts)
-        console.log("followingPosts", followingPosts)
 
         res.status(200).json(userPosts.concat(...followingPosts))
     } catch (err) {
@@ -120,9 +189,19 @@ router.get('/timeline/:userId', async (req, res) => {
 router.get('/profile/:username', async (req, res) => {
     try {
         const { username } = req.params
+        const token = req.headers.authorization
+        
+        if (!token) {
+            res.status(417).send("Missing token");
+        };
 
+        const isTokenValid = tokenGenerator.verify(token.includes("Bearer ") ? token.replace("Bearer ", "") : token);
+      
+        if (!isTokenValid) {
+            res.status(409).send("Invalid token");
+        }
         const user = await User.findOne({ username })
-        const posts = await Post.find({ userId: user._id })
+        const posts = await Post.find({ userId: user.id })
         
         res.status(200).json(posts)
     } catch (err) {

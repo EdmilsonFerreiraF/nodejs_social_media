@@ -1,43 +1,61 @@
 const router = require('express').Router()
-const bcrypt = require('bcryptjs')
 
 const User = require('../models/User')
 
+const TokenGenerator = require('../services/tokenGenerator')
+const HashGenerator = require('../services/hashGenerator')
+
+const tokenGenerator = new TokenGenerator()
+const hashGenerator = new HashGenerator()
+
 // Update user
-router.put('/:id', async(req, res) => {
+router.put('/', async(req, res) => {
     try {
-        const { userId, password, isAdmin } = req.body
-        const { id } = req.params
+        const { password } = req.body
+        const token = req.headers.authorization
+        
+        if (!token) {
+            res.status(417).send("Missing token");
+        };
 
-        if (userId !== id && !isAdmin) {
-            res.status(403).json('You can only update one account!')
-        } 
-
-        if (password && !isAdmin) {
-            const salt = await bcrypt.genSalt(10)
-
-            req.body.password = await bcrypt.hash(password, salt)
+        const isTokenValid = tokenGenerator.verify(token.includes("Bearer ") ? token.replace("Bearer ", "") : token);
+      
+        if (!isTokenValid) {
+            res.status(409).send("Invalid token");
         }
 
-        await User.findByIdAndUpdate(id, {$set: req.body})
+        let cypherPassword
+
+        if (password) {
+            // Encrypt password
+            cypherPassword = await hashGenerator.hash(password)
+        }
+
+        await User.findOneAndUpdate(isTokenValid.id, { $set: { password: cypherPassword } })
 
         res.status(200).json('Your account has been updated')
     } catch (err) {
+        console.log(err)
         res.status(500).json(err)
     }
 })
 
 // Delete user
-router.delete('/:id', async(req, res) => {
+router.delete('/', async(req, res) => {
     try {
-        const { id } = req.params
-        const { userId } = req.body
+        const token = req.headers.authorization
+        
+        if (!token) {
+            res.status(417).send("Missing token");
+        };
 
-        if (userId !== id) {
-            res.status(403).json('You can delete only one account!')
-        } 
+        const isTokenValid = tokenGenerator.verify(token.includes("Bearer ") ? token.replace("Bearer ", "") : token);
+      
+        if (!isTokenValid) {
+            res.status(409).send("Invalid token");
+        }
 
-        await User.deleteOne({ id })
+        await User.deleteOne({ id: isTokenValid.id })
 
         res.status(200).json('Your account has been deleted')
     } catch (err) {
@@ -47,12 +65,23 @@ router.delete('/:id', async(req, res) => {
 
 // Get user
 router.get('/', async(req, res) => {
-    const { userId, username } = req.query
-
     try {
-        const user = userId 
-        ? await User.findById({ "_id": userId }) 
-        : await User.findOne({ username })
+        const { id } = req.query
+        const token = req.headers.authorization
+            
+        if (!token) {
+            res.status(417).send("Missing token");
+        };
+
+        const isTokenValid = tokenGenerator.verify(token.includes("Bearer ") ? token.replace("Bearer ", "") : token);
+    
+        if (!isTokenValid) {
+            res.status(409).send("Invalid token");
+        }
+
+        const user = isTokenValid.id 
+        ? await User.findOne({ id: isTokenValid.id }) 
+        : await User.findOne({ id })
 
         const { password, updatedAt, ...otherData } = user._doc
         
@@ -62,21 +91,73 @@ router.get('/', async(req, res) => {
     }
 })
 
+// Get friends
+router.get('/friends', async(req, res) => {
+    try {
+        const token = req.headers.authorization
+            
+        if (!token) {
+            res.status(417).send("Missing token");
+        };
+
+        const isTokenValid = tokenGenerator.verify(token.includes("Bearer ") ? token.replace("Bearer ", "") : token);
+    
+        if (!isTokenValid) {
+            res.status(409).send("Invalid token");
+        }
+
+        const user = await User.findOne({ id: isTokenValid.id })
+
+        const friends = await Promise.all(
+            user.following.map(friendId => {
+                return User.findOne({ id: friendId })
+            })
+        )
+
+        let friendList = []
+
+        friends.map(friend => {
+            const { id, username, profilePicture } = friend
+
+            friendList.push({ id, username, profilePicture })
+        })
+
+        res.status(200).json(friendList)
+    } catch (err) {
+        res.status(500).json(err)
+    }
+})
+
 // Follow user
 router.put('/:id/follow', async(req, res) => {
     try {
         const { id } = req.params
-        const { userId } = req.body
+        const token = req.headers.authorization
+        
+        if (!token) {
+            res.status(417).send("Missing token");
+        };
 
-        if (userId === id) {
-            res.status(403).json("You can't follow yourself")
+        const isTokenValid = tokenGenerator.verify(token.includes("Bearer ") ? token.replace("Bearer ", "") : token);
+      
+        if (!isTokenValid) {
+            res.status(409).send("Invalid token");
         }
 
-        const user = await User.findById({ "_id": id })
-        const currentUser = await User.findById({ "_id": userId })
+        if (isTokenValid.id === id) {
+            res.status(403).json("You can't follow yourself")
+        }
         
-        if (!user.followers.includes(userId)) {
-            await user.updateOne({ $push: { followers: userId }})
+        const user = await User.findOne({ id })
+        
+        if (!user) {
+            res.status(403).json("User not found")
+        }
+        
+        const currentUser = await User.findOne({ id: isTokenValid.id })
+        
+        if (!user.followers.includes(isTokenValid.id)) {
+            await user.updateOne({ $push: { followers: isTokenValid.id }})
             await currentUser.updateOne({ $push: { following: id }})
 
             res.status(200).json("You have been followed this user")
@@ -84,6 +165,7 @@ router.put('/:id/follow', async(req, res) => {
             res.status(403).json("You have already followed this user")
         }
     } catch (err) {
+        console.log(err)
         res.status(500).json(err)
     }
 }) 
@@ -91,18 +173,29 @@ router.put('/:id/follow', async(req, res) => {
 // Unfollow user
 router.put('/:id/unfollow', async(req, res) => {
     try {
-        const { userId } = req.body
         const { id } = req.params
 
-        if (userId === id) {
+        const token = req.headers.authorization
+        
+        if (!token) {
+            res.status(417).send("Missing token");
+        };
+    
+        const isTokenValid = tokenGenerator.verify(token.includes("Bearer ") ? token.replace("Bearer ", "") : token);
+      
+        if (!isTokenValid) {
+            res.status(409).send("Invalid token");
+        }
+
+        if (isTokenValid.id === id) {
             res.status(403).json("You can't unfollow yourself")
         }
 
-        const user = await User.findById({ "_id": id })
-        const currentUser = await User.findById({ "_id": userId })
+        const user = await User.findOne({ id })
+        const currentUser = await User.findOne({ id: isTokenValid.id })
         
-        if (user.followers.includes(userId)) {
-            await user.updateOne({ $pull: { followers: userId }})
+        if (user.followers.includes(isTokenValid.id)) {
+            await user.updateOne({ $pull: { followers: isTokenValid.id }})
             await currentUser.updateOne({ $pull: { following: id }})
 
             res.status(200).json("You have been followed this user")
@@ -110,6 +203,7 @@ router.put('/:id/unfollow', async(req, res) => {
             res.status(403).json("You haven't followed this user")
         }
     } catch (err) {
+        console.log(err)
         res.status(500).json(err)
     }
 }) 

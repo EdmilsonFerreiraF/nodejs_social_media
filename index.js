@@ -10,7 +10,7 @@ const postsRoute = require('./routes/posts')
 
 dotenv.config()
 
-mongoose.connect(process.env.MONGO_URL, {useNewUrlParser: true}, (err) => {
+mongoose.connect(`mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}.mongodb.net/social?retryWrites=true&w=majority`, {useNewUrlParser: true}, (err) => {
     console.log("Connected to MongoDB")
 
     if (err) {
