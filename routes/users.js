@@ -8,12 +8,23 @@ const HashGenerator = require('../services/hashGenerator')
 const tokenGenerator = new TokenGenerator()
 const hashGenerator = new HashGenerator()
 
+const inputToBoolean = (input) => {
+    switch (input) {
+        case true:
+          return true
+        case false:
+          return false
+        default:
+          throw new Error("Invalid user isAdmin");
+    }
+}
+
 // Update user
 router.put('/', async(req, res) => {
     try {
         const { password } = req.body
         const token = req.headers.authorization
-        
+                
         if (!token) {
             res.status(417).send("Missing token");
         };
@@ -23,6 +34,12 @@ router.put('/', async(req, res) => {
         if (!isTokenValid) {
             res.status(409).send("Invalid token");
         }
+        
+        inputToBoolean(isTokenValid.isAdmin)
+
+        if (isTokenValid.isAdmin !== true) {
+            res.status(403).send("Only admins can access this feature")
+        }
 
         let cypherPassword
 
@@ -31,7 +48,7 @@ router.put('/', async(req, res) => {
             cypherPassword = await hashGenerator.hash(password)
         }
 
-        await User.findOneAndUpdate(isTokenValid.id, { $set: { password: cypherPassword } })
+        await User.updateOne({ id: isTokenValid.id }, { $set: { password: cypherPassword } })
 
         res.status(200).json('Your account has been updated')
     } catch (err) {
@@ -55,10 +72,17 @@ router.delete('/', async(req, res) => {
             res.status(409).send("Invalid token");
         }
 
+        inputToBoolean(isTokenValid.isAdmin)
+
+        if (isTokenValid.isAdmin !== true) {
+            res.status(403).send("Only admins can access this feature")
+        }
+
         await User.deleteOne({ id: isTokenValid.id })
 
         res.status(200).json('Your account has been deleted')
     } catch (err) {
+        console.log(err)
         res.status(500).json(err)
     }
 })
@@ -68,7 +92,7 @@ router.get('/', async(req, res) => {
     try {
         const { id } = req.query
         const token = req.headers.authorization
-            
+        
         if (!token) {
             res.status(417).send("Missing token");
         };
@@ -80,13 +104,14 @@ router.get('/', async(req, res) => {
         }
 
         const user = isTokenValid.id 
-        ? await User.findOne({ id: isTokenValid.id }) 
-        : await User.findOne({ id })
+        ? await User.findOne({ id }) 
+        : await User.findOne({ id: isTokenValid.id })
 
         const { password, updatedAt, ...otherData } = user._doc
         
         res.status(200).json(otherData)
     } catch (err) {
+        console.log(err)
         res.status(500).json(err)
     }
 })
@@ -95,7 +120,7 @@ router.get('/', async(req, res) => {
 router.get('/friends', async(req, res) => {
     try {
         const token = req.headers.authorization
-            
+
         if (!token) {
             res.status(417).send("Missing token");
         };
@@ -144,6 +169,13 @@ router.put('/:id/follow', async(req, res) => {
             res.status(409).send("Invalid token");
         }
 
+        
+        inputToBoolean(isTokenValid.isAdmin)
+
+        if (isTokenValid.isAdmin !== true) {
+            res.status(403).send("Only admins can access this feature")
+        }
+
         if (isTokenValid.id === id) {
             res.status(403).json("You can't follow yourself")
         }
@@ -185,6 +217,12 @@ router.put('/:id/unfollow', async(req, res) => {
       
         if (!isTokenValid) {
             res.status(409).send("Invalid token");
+        }
+
+        inputToBoolean(isTokenValid.isAdmin)
+
+        if (isTokenValid.isAdmin !== true) {
+            res.status(403).send("Only admins can access this feature")
         }
 
         if (isTokenValid.id === id) {

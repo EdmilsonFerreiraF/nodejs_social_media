@@ -9,19 +9,33 @@ const hashGenerator = new HashGenerator()
 const idGenerator = new IdGenerator()
 const tokenGenerator = new TokenGenerator()
 
+const inputToBoolean = (input) => {
+    switch (input) {
+        case false:
+          return false
+        case true:
+          return true
+        default:
+          throw new Error("Invalid user isAdmin");
+    }
+}
+
 // Sign up
 router.post('/signup', async (req, res) => {
     try {
         // Get user data from request body
-        const { username, email, password } = req.body
+        const { username, email, password, isAdmin } = req.body
 
         if (
             !username ||
             !email ||
-            !password
+            !password ||
+            !isAdmin
          ) {
             res.status(417).send("Missing input")
         }
+
+        inputToBoolean(isAdmin)
 
         if (email.indexOf("@") === -1) {
             res.status(422).send("Invalid email address");
@@ -41,15 +55,18 @@ router.post('/signup', async (req, res) => {
             id,
             username,
             email,
-            password: cypherPassword
+            password: cypherPassword,
+            isAdmin
         })
         
+        console.log('isAdmin', isAdmin)
         // Save user
         await newUser.save()
 
         const token = tokenGenerator.generate({
             id,
-            username
+            username,
+            isAdmin
         });
 
         res.status(200).json(token)
@@ -88,11 +105,13 @@ router.post('/login', async (req, res) => {
 
         const token = tokenGenerator.generate({
             id: user.id,
-            username: user.username
+            username: user.username,
+            isAdmin: user.isAdmin
         });
 
         res.status(200).send(token)
     } catch (err) {
+        console.log(err)
         res.status(500).json(err)
     }
 })

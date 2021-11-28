@@ -9,11 +9,24 @@ const IdGenerator = require('../services/idGenerator')
 const tokenGenerator = new TokenGenerator()
 const idGenerator = new IdGenerator()
 
+const inputToBoolean = (input) => {
+    switch (input) {
+        case false:
+          return false
+        case true:
+          return true
+        default:
+          throw new Error("Invalid user isAdmin");
+    }
+}
+
 // Create a post
 router.post('/', async (req, res) => {
     try {
         const { description, image } = req.body
         const token = req.headers.authorization
+        
+ 
         
         if (!token) {
             res.status(417).send("Missing token");
@@ -23,6 +36,12 @@ router.post('/', async (req, res) => {
       
         if (!isTokenValid) {
             res.status(409).send("Invalid token");
+        }
+
+        inputToBoolean(isTokenValid.isAdmin)
+
+        if (isTokenValid.isAdmin !== true) {
+            res.status(403).send("Only admins can access this feature")
         }
 
         const id = idGenerator.generate();
@@ -43,7 +62,7 @@ router.get('/:id', async (req, res) => {
     try {
         const { id } = req.params
         const token = req.headers.authorization
-        
+
         if (!token) {
             res.status(417).send("Missing token");
         };
@@ -68,6 +87,10 @@ router.put('/:id', async (req, res) => {
         const { id } = req.params
         const token = req.headers.authorization
         
+        
+
+
+
         if (!token) {
             res.status(417).send("Missing token");
         };
@@ -76,6 +99,12 @@ router.put('/:id', async (req, res) => {
       
         if (!isTokenValid) {
             res.status(409).send("Invalid token");
+        }
+
+        inputToBoolean(isTokenValid.isAdmin)
+
+        if (isTokenValid.isAdmin !== true) {
+            res.status(403).send("Only admins can access this feature")
         }
 
         const post = await Post.findOne({ id })
@@ -98,6 +127,12 @@ router.delete('/:id', async (req, res) => {
         const { id } = req.params
         const token = req.headers.authorization
         
+        inputToBoolean(token.isAdmin)
+
+        if (token.isAdmin !== true) {
+            res.status(403).send("Only admins can access this feature")
+        }
+
         if (!token) {
             res.status(417).send("Missing token");
         };
@@ -108,16 +143,23 @@ router.delete('/:id', async (req, res) => {
             res.status(409).send("Invalid token");
         }
 
+        inputToBoolean(isTokenValid.isAdmin)
+
+        if (isTokenValid.isAdmin !== true) {
+            res.status(403).send("Only admins can access this feature")
+        }
+
         const post = await Post.findOne({ id })
 
         if (post.userId !== isTokenValid.id) {
             res.status(403).json("You can only delete your own posts")
         }
 
-        await post.deleteOne({ $set: req.body })
+        await post.deleteOne({ id: isTokenValid.id }, err => console.log(err)) 
 
         res.status(200).json("The post has been deleted")
     } catch (err) {
+        console.log(err)
         res.status(500).json(err)
     }
 })
@@ -127,7 +169,7 @@ router.put('/:id/like', async (req, res) => {
     try {
         const { id } = req.params
         const token = req.headers.authorization
-        
+
         if (!token) {
             res.status(417).send("Missing token");
         };
@@ -136,6 +178,12 @@ router.put('/:id/like', async (req, res) => {
       
         if (!isTokenValid) {
             res.status(409).send("Invalid token");
+        }
+
+        inputToBoolean(isTokenValid.isAdmin)
+
+        if (isTokenValid.isAdmin !== true) {
+            res.status(403).send("Only admins can access this feature")
         }
 
         const post = await Post.findOne({ id })
@@ -150,6 +198,7 @@ router.put('/:id/like', async (req, res) => {
             res.status(200).json("The post has been disliked")
         }
     } catch (err) {
+        console.log(err)
         res.status(500).json(err)
     }
 })

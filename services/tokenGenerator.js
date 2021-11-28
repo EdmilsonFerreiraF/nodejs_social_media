@@ -10,7 +10,8 @@ class TokenGenerator {
     const newToken = jwt.sign(
       {
         id: input.id,
-        nickname: input.nickname
+        username: input.username,
+        isAdmin: input.isAdmin
       },
       process.env.JWT_KEY,
       {
@@ -21,12 +22,16 @@ class TokenGenerator {
     return newToken;
   };
 
-  verify(token) {
+  verify = (token) => {
     const payload = jwt.verify(token, process.env.JWT_KEY);
-    const result = { id: payload.id, nickname: payload.nickname };
+    const result = {
+      id: payload.id,
+      username: payload.username,
+      isAdmin: payload.isAdmin
+    };
 
     return result;
   };
-};
+}
 
 module.exports = TokenGenerator
