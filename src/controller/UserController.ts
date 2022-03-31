@@ -101,9 +101,15 @@ export class UserController {
 
    public async getUserById(req: Request, res: Response): Promise<void> {
       try {
+         const { id } = req.query
          const token = req.headers.authorization as string
 
+         const input: GetUserDataDTO = {
+            id: id as string
+         }
+
          const result: User = await userBusiness.getUserById(
+            input,
             token
          )
 
