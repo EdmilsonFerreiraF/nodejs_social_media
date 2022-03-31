@@ -155,17 +155,17 @@ export class PostController {
       }
    }
 
-   public async getPostsByUsername(req: Request, res: Response): Promise<void> {
+   public async getPostsByUserId(req: Request, res: Response): Promise<void> {
       try {
-         const { username } = req.params
+         const { id } = req.params
          const token = req.headers.authorization
 
 
          const input: GetPostsByUserDTO = {
-            username
+            id
          }
 
-         await postBusiness.getPostsByUsername(
+         await postBusiness.getPostsByUserId(
             input,
             token
          )

@@ -126,16 +126,20 @@ export class PostDatabase extends BaseDatabase {
    public async getTimelinePosts(input: PostCRUDDTO): Promise<Post> {
       try {
          await BaseDatabase.connect
+         console.log('input.id', input.id)
 
          const PostModel = model<PostEntity>(this.tableName, this.postSchema)
          const UserModel = model<User>(UserDatabase.getTableName(), UserDatabase.getUserSchema())
 
-         const currentUser = await UserModel.findOne({ id: input.id })
 
-         const userPosts = await PostModel.find({ userId: currentUser.id })
+         const user = await UserModel.findOne({ id: input.id })
+
+         const userPosts = await PostModel.find({ userId: user.id })
+
+    
 
          const followingPosts = await Promise.all(
-            currentUser.following.map(followingId => {
+            user.following.map(followingId => {
                return PostModel.find({ userId: followingId })
             })
          )
@@ -146,13 +150,13 @@ export class PostDatabase extends BaseDatabase {
       }
    }
 
-   public async getPostsByUsername(input: GetPostsByUserDTO): Promise<Post> {
+   public async getPostsByUserId(input: GetPostsByUserDTO): Promise<Post> {
       try {
          await BaseDatabase.connect
 
          const PostModel = model<PostEntity>(this.tableName, this.postSchema)
 
-         const posts = await PostModel.find({ author: input.username })
+         const posts = await PostModel.find({ userId: input.id })
 
          return this.toModel(posts)
       } catch (error) {

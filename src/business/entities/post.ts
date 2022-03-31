@@ -25,5 +25,5 @@ export interface UpdatePostDDTO {
 }
 
 export interface GetPostsByUserDTO {
-    username: string
+    id: string
 }

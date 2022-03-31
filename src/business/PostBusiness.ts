@@ -192,9 +192,9 @@ export class PostBusiness {
          throw new CustomError(error.statusCode, error.message)
       }
    }
-   public async getPostsByUsername(input: GetPostsByUserDTO, token: string) {
+   public async getPostsByUserId(input: GetPostsByUserDTO, token: string) {
       try {
-         if (!input.username) {
+         if (!input.id) {
             throw new CustomError(417, "Missing input")
          }
 
@@ -208,7 +208,7 @@ export class PostBusiness {
             throw new CustomError(409, "Invalid token")
          }
 
-         const result = await this.postDatabase.getPostsByUsername(input)
+         const result = await this.postDatabase.getPostsByUserId(input)
 
          return result
       } catch (error) {
