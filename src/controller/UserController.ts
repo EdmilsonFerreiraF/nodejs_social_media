@@ -7,7 +7,7 @@ import { TokenGenerator } from "../business/services/tokenGenerator"
 import { UserBusiness } from "../business/UserBusiness"
 import { UserDatabase } from "../data/UserDatabase"
 
-import { FollowUserDTO, GetUserDataDTO, LoginInputDTO, SignupInputDTO, UpdateUserDTO } from "../business/entities/user"
+import { FollowUserDTO, GetUserDataDTO, GetUserDataByUsernameDTO, LoginInputDTO, SignupInputDTO, UpdateUserDTO } from "../business/entities/user"
 import { User } from "../data/model/User"
 
 const userBusiness: UserBusiness =
@@ -109,6 +109,28 @@ export class UserController {
          }
 
          const result: User = await userBusiness.getUserById(
+            input,
+            token
+         )
+
+         res.status(200).send(result)
+      } catch (error) {
+         const { statusCode, message } = error
+
+         res.status(statusCode || 400).send({ message })
+      }
+   }
+
+   public async getUserByUsername(req: Request, res: Response): Promise<void> {
+      try {
+         const { username } = req.query
+         const token = req.headers.authorization as string
+
+         const input: GetUserDataByUsernameDTO = {
+            username: username as string
+         }
+
+         const result: User = await userBusiness.getUserByUsername(
             input,
             token
          )

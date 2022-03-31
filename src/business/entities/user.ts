@@ -40,6 +40,10 @@ export type GetUserDataDTO = {
     id: string
 }
 
+export type GetUserDataByUsernameDTO = {
+    username: string
+}
+
 export type FollowUserDTO = {
     id: string
 }

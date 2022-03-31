@@ -6,7 +6,7 @@ import { UserDatabase } from "../data/UserDatabase"
 
 import { CustomError } from "../errors/CustomError"
 import { User } from "../data/model/User"
-import { FollowUserDTO, Friend, GetUserDataDTO, LoginInputDTO, SignupInputDTO, UpdateUserDTO } from "./entities/user"
+import { FollowUserDTO, Friend, GetUserDataByUsernameDTO, GetUserDataDTO, LoginInputDTO, SignupInputDTO, UpdateUserDTO } from "./entities/user"
 
 export class UserBusiness {
    constructor(
@@ -176,6 +176,30 @@ export class UserBusiness {
             ? { id: input.id }
             : { id: isTokenValid.id }
          )
+
+         return result
+      } catch (error) {
+         throw new CustomError(error.statusCode, error.message)
+      }
+   }
+
+   public async getUserByUsername(input: GetUserDataByUsernameDTO, token: string): Promise<User> {
+      try {
+         if (!input.username) {
+            throw new CustomError(417, "Missing input")
+         }
+
+         if (!token) {
+            throw new CustomError(422, "Missing token")
+         }
+
+         const isTokenValid: AuthenticationData = this.tokenGenerator.verify(token.includes("Bearer ") ? token.replace("Bearer ", "") : token)
+
+         if (!isTokenValid) {
+            throw new CustomError(409, "Invalid token")
+         }
+
+         const result: User = await this.userDatabase.getUserByUsername({ username: input.username })
 
          return result
       } catch (error) {

@@ -152,7 +152,7 @@ export class PostDatabase extends BaseDatabase {
 
          const PostModel = model<PostEntity>(this.tableName, this.postSchema)
 
-         const posts = await PostModel.find({ postId: input.username })
+         const posts = await PostModel.find({ author: input.username })
 
          return this.toModel(posts)
       } catch (error) {

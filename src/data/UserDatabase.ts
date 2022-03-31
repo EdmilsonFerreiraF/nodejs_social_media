@@ -1,5 +1,5 @@
 import mongoose, { model } from "mongoose"
-import { FollowUserDTO, Friend, GetUserDataDTO, LoginInputDTO, UpdateUserDTO } from "../business/entities/user"
+import { FollowUserDTO, Friend, GetUserDataByUsernameDTO, GetUserDataDTO, LoginInputDTO, UpdateUserDTO } from "../business/entities/user"
 const { Schema } = mongoose
 
 import BaseDatabase from "./BaseDatabase"
@@ -165,6 +165,20 @@ export class UserDatabase extends BaseDatabase {
          const UserModel = model<UserEntity>(this.getTableName(), this.getUserSchema())
 
          const user = await UserModel.findOne({ id: input.id })
+
+         return this.toModel(user)
+      } catch (error) {
+         throw new Error(error.statusCode)
+      }
+   }
+
+   public async getUserByUsername(input: GetUserDataByUsernameDTO): Promise<User> {
+      try {
+         await BaseDatabase.connect
+
+         const UserModel = model<UserEntity>(this.getTableName(), this.getUserSchema())
+
+         const user = await UserModel.findOne({ username: input.username })
 
          return this.toModel(user)
       } catch (error) {
