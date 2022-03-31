@@ -156,12 +156,8 @@ export class UserBusiness {
       }
    }
 
-   public async getUserById(input: GetUserDataDTO, token: string): Promise<User> {
+   public async getUserById(token: string): Promise<User> {
       try {
-         if (!input.id) {
-            throw new CustomError(417, "Missing input")
-         }
-
          if (!token) {
             throw new CustomError(422, "Missing token")
          }
@@ -172,10 +168,7 @@ export class UserBusiness {
             throw new CustomError(409, "Invalid token")
          }
 
-         const result: User = await this.userDatabase.getUserById(input.id
-            ? { id: input.id }
-            : { id: isTokenValid.id }
-         )
+         const result: User = await this.userDatabase.getUserById({ id: isTokenValid.id })
 
          return result
       } catch (error) {
