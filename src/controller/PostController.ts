@@ -143,7 +143,7 @@ export class PostController {
             id
          }
 
-         const result: Post = await postBusiness.getTimelinePosts(
+         const result: Post[] = await postBusiness.getTimelinePosts(
             input,
             token
          )
@@ -159,7 +159,6 @@ export class PostController {
       try {
          const { id } = req.params
          const token = req.headers.authorization
-
 
          const input: GetPostsByUserDTO = {
             id

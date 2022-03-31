@@ -6,8 +6,10 @@ import BaseDatabase from "./BaseDatabase"
 import Post from "./model/Post"
 import { Post as PostEntity } from "../business/entities/post"
 import UserDatabase from "./UserDatabase"
-import { User } from "../business/entities/user"
+// import { User } from "../business/entities/user"
+import { User } from "./model/User"
 import { AuthenticationData } from "../business/services/tokenGenerator"
+import UserModel  from "./config"
 
 export class PostDatabase extends BaseDatabase {
    protected tableName: string = "post"
@@ -123,29 +125,29 @@ export class PostDatabase extends BaseDatabase {
       }
    }
 
-   public async getTimelinePosts(input: PostCRUDDTO): Promise<Post> {
+   public async getTimelinePosts(input: PostCRUDDTO): Promise<any> {
       try {
          await BaseDatabase.connect
-         console.log('input.id', input.id)
 
          const PostModel = model<PostEntity>(this.tableName, this.postSchema)
-         const UserModel = model<User>(UserDatabase.getTableName(), UserDatabase.getUserSchema())
+         console.log('UserDatabase.getTableName()', UserDatabase.getTableName())
+         console.log('UserDatabase.getUserSchema()', UserDatabase.getUserSchema())
+         // const UserModel = model<User>(UserDatabase.getTableName(), UserModel)
 
+         const currentUser: any = await UserModel.findOne({ id: input.id })
 
-         const user = await UserModel.findOne({ id: input.id })
+         const userPosts = await PostModel.find({ userId: currentUser.id })
 
-         const userPosts = await PostModel.find({ userId: user.id })
-
-    
-
+         console.log('currentUser, userPosts', currentUser, userPosts)
          const followingPosts = await Promise.all(
-            user.following.map(followingId => {
+            currentUser.following.map(followingId => {
                return PostModel.find({ userId: followingId })
             })
          )
 
-         return this.toModel(userPosts.concat(...followingPosts))
+         return userPosts.concat(...followingPosts).map(post => this.toModel(post))
       } catch (error) {
+         console.log('error - database', error)
          throw new Error(error.statusCode)
       }
    }

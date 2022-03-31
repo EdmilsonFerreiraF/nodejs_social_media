@@ -169,7 +169,7 @@ export class PostBusiness {
       }
    }
 
-   public async getTimelinePosts(input: PostCRUDDTO, token: string): Promise<Post> {
+   public async getTimelinePosts(input: PostCRUDDTO, token: string): Promise<Post[]> {
       try {
          if (!input.id) {
             throw new CustomError(417, "Missing input")
@@ -185,10 +185,12 @@ export class PostBusiness {
             throw new CustomError(409, "Invalid token")
          }
 
-         const result: Post = await this.postDatabase.getTimelinePosts(input)
+         const result: Post[] = await this.postDatabase.getTimelinePosts(input)
 
          return result
       } catch (error) {
+         console.log('error', error)
+
          throw new CustomError(error.statusCode, error.message)
       }
    }
