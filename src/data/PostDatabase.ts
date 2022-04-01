@@ -16,7 +16,7 @@ export class PostDatabase extends BaseDatabase {
 
    protected postSchema = new Schema({
       id: String,
-      postId: String,
+      userId: String,
       description: String,
       image: String,
       likes: [String],
@@ -31,7 +31,7 @@ export class PostDatabase extends BaseDatabase {
          dbModel &&
          new Post(
             dbModel.id,
-            dbModel.postId,
+            dbModel.userId,
             dbModel.description,
             dbModel.image,
             dbModel.likes
@@ -43,9 +43,10 @@ export class PostDatabase extends BaseDatabase {
       try {
          const postDocument = {
             id: input.getId(),
-            userId: input.getPostId(),
+            userId: input.getUserId(),
             description: input.getDescription(),
-            image: input.getImage()
+            image: input.getImage(),
+            likes: input.getLikes()
          }
 
          await BaseDatabase.connect

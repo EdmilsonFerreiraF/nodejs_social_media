@@ -1,7 +1,7 @@
 export class Post {
     constructor(
         private id: string,
-        private postId: string,
+        private userId: string,
         private description: string,
         private image: string,
         private likes: string,
@@ -11,8 +11,8 @@ export class Post {
         return this.id
     }
 
-    getPostId() {
-        return this.postId
+    getUserId() {
+        return this.userId
     }
 
     getDescription() {
@@ -31,8 +31,8 @@ export class Post {
         this.id = id
     }
 
-    setPostId(postId: string) {
-        this.postId = postId
+    setUserId(userId: string) {
+        this.userId = userId
     }
 
     setDescription(description: string) {
@@ -48,7 +48,7 @@ export class Post {
     }
 
     static toPostModel(post: any): Post {
-        return new Post(post.id, post.postId, post.description, post.image, post.likes)
+        return new Post(post.id, post.userId, post.description, post.image, post.likes)
     }
 }
 
