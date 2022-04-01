@@ -147,7 +147,6 @@ export class PostController {
             input,
             token
          )
-         console.log('result', result)
 
          res.status(200).send(result)
       } catch (error) {

@@ -131,15 +131,12 @@ export class PostDatabase extends BaseDatabase {
          await BaseDatabase.connect
 
          const PostModel = model<PostEntity>(this.tableName, this.postSchema)
-         console.log('UserDatabase.getTableName()', UserDatabase.getTableName())
-         console.log('UserDatabase.getUserSchema()', UserDatabase.getUserSchema())
          // const UserModel = model<User>(UserDatabase.getTableName(), UserModel)
 
          const currentUser: any = await UserModel.findOne({ id: input.id })
 
          const userPosts = await PostModel.find({ userId: currentUser.id })
 
-         console.log('currentUser, userPosts', currentUser, userPosts)
          const followingPosts = await Promise.all(
             currentUser.following.map(followingId => {
                return PostModel.find({ userId: followingId })

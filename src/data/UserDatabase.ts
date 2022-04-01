@@ -1,5 +1,5 @@
 import mongoose, { model } from "mongoose"
-import { FollowUserDTO, Friend, GetUserDataByUsernameDTO, GetUserDataDTO, LoginInputDTO, UpdateUserDTO } from "../business/entities/user"
+import { FollowUserDTO, Friend, GetUserDataByUsernameDTO, GetUserDataDTO, GetUserByUsernameDataDTO, LoginInputDTO, UpdateUserDTO } from "../business/entities/user"
 const { Schema } = mongoose
 
 import BaseDatabase from "./BaseDatabase"
@@ -159,23 +159,30 @@ export class UserDatabase extends BaseDatabase {
       }
    }
 
+   public async getUserByIdOrUsername(input: GetUserByUsernameDataDTO): Promise<User> {
+      try {
+         await BaseDatabase.connect
+
+         let user
+
+         if (input.username) {
+            user = await this.getUserModel().findOne({ username: input.username } )
+         } else {
+            user = await this.getUserModel().findOne({ id: input.id } )
+         }
+
+         return this.toModel(user)
+      } catch (error) {
+         console.log('error', error)
+         throw new Error(error.statusCode)
+      }
+   }
+
    public async getUserById(input: GetUserDataDTO): Promise<User> {
       try {
          await BaseDatabase.connect
 
          const user = await this.getUserModel().findOne({ id: input.id })
-
-         return this.toModel(user)
-      } catch (error) {
-         throw new Error(error.statusCode)
-      }
-   }
-
-   public async getUserByUsername(input: GetUserDataByUsernameDTO): Promise<User> {
-      try {
-         await BaseDatabase.connect
-
-         const user = await this.getUserModel().findOne({ username: input.username })
 
          return this.toModel(user)
       } catch (error) {

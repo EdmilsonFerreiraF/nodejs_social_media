@@ -156,7 +156,7 @@ export class UserBusiness {
       }
    }
 
-   public async getUserById(input: any, token: string): Promise<User> {
+   public async getUserByIdOrUsername(input: any, token: string): Promise<User> {
       try {
          if (!token) {
             throw new CustomError(422, "Missing token")
@@ -168,21 +168,23 @@ export class UserBusiness {
             throw new CustomError(409, "Invalid token")
          }
 
-         const result: User = await this.userDatabase.getUserById(input.id
-            ? { id: input.id }
+         const result: User = await this.userDatabase.getUserByIdOrUsername(input.username
+            ? { username: input.username }
             : { id: isTokenValid.id }
          )
 
          return result
       } catch (error) {
+         console.log('error', error)
+
          throw new CustomError(error.statusCode, error.message)
       }
    }
 
-   public async getUserByUsername(input: GetUserDataByUsernameDTO, token: string): Promise<User> {
+   public async getUserById(input: any, token: string): Promise<User> {
       try {
-         if (!input.username) {
-            throw new CustomError(417, "Missing input")
+         if (!input.id) {
+            throw new CustomError(422, "Missing id")
          }
 
          if (!token) {
@@ -195,7 +197,7 @@ export class UserBusiness {
             throw new CustomError(409, "Invalid token")
          }
 
-         const result: User = await this.userDatabase.getUserByUsername({ username: input.username })
+         const result: User = await this.userDatabase.getUserById({id: input.id })
 
          return result
       } catch (error) {

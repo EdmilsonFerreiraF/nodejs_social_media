@@ -40,6 +40,11 @@ export type GetUserDataDTO = {
     id: string
 }
 
+export type GetUserByUsernameDataDTO = {
+    id?: string,
+    username?: string
+}
+
 export type GetUserDataByUsernameDTO = {
     username: string
 }
