@@ -6,7 +6,7 @@ import { TokenGenerator } from "../business/services/tokenGenerator"
 import { PostBusiness } from "../business/PostBusiness"
 import { PostDatabase } from "../data/PostDatabase"
 
-import { CreatePostDTO, GetPostsByUserDTO, PostCRUDDTO, UpdatePostDDTO } from "../business/entities/post"
+import { CreatePostDTO, GetPostsByUsernameDTO, PostCRUDDTO, UpdatePostDDTO } from "../business/entities/post"
 import { Post } from "../data/model/Post"
 
 const postBusiness =
@@ -155,21 +155,21 @@ export class PostController {
       }
    }
 
-   public async getPostsByUserId(req: Request, res: Response): Promise<void> {
+   public async getPostsByUsername(req: Request, res: Response): Promise<void> {
       try {
-         const { id } = req.params
+         const { username } = req.params
          const token = req.headers.authorization
 
-         const input: GetPostsByUserDTO = {
-            id
+         const input: GetPostsByUsernameDTO = {
+            username
          }
 
-         await postBusiness.getPostsByUserId(
+         const result = await postBusiness.getPostsByUsername(
             input,
             token
          )
 
-         res.status(200).send("You have been followed this post")
+         res.status(200).send(result)
       } catch (error) {
          const { statusCode, message } = error
          res.status(statusCode || 400).send({ message })

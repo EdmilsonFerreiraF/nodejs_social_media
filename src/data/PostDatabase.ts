@@ -1,5 +1,5 @@
 import mongoose, { model } from "mongoose"
-import { GetPostsByUserDTO, PostCRUDDTO, UpdatePostDDTO } from "../business/entities/post"
+import { GetPostsByUsernameDTO, PostCRUDDTO, UpdatePostDDTO } from "../business/entities/post"
 const { Schema } = mongoose
 
 import BaseDatabase from "./BaseDatabase"
@@ -150,15 +150,15 @@ export class PostDatabase extends BaseDatabase {
       }
    }
 
-   public async getPostsByUserId(input: GetPostsByUserDTO): Promise<Post> {
+   public async getPostsByUsername(input: GetPostsByUsernameDTO): Promise<Post[]> {
       try {
          await BaseDatabase.connect
 
          const PostModel = model<PostEntity>(this.tableName, this.postSchema)
 
-         const posts = await PostModel.find({ userId: input.id })
+         const posts = await PostModel.find({ userId: input.username })
 
-         return this.toModel(posts)
+         return posts.map(post => this.toModel(post))
       } catch (error) {
          throw new Error(error.posts)
       }

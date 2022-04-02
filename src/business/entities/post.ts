@@ -24,6 +24,6 @@ export interface UpdatePostDDTO {
     likes?: [],
 }
 
-export interface GetPostsByUserDTO {
-    id: string
+export interface GetPostsByUsernameDTO {
+    username: string
 }
