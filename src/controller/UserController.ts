@@ -101,7 +101,7 @@ export class UserController {
 
    public async getUserByIdOrUsername(req: Request, res: Response): Promise<void> {
       try {
-         const { username } = req.query
+         const { username } = req.params
          const token = req.headers.authorization as string
 
          const input: GetUserByUsernameDataDTO = {
@@ -146,7 +146,7 @@ export class UserController {
 
    public async getFriends(req: Request, res: Response): Promise<void> {
       try {
-         const { id } = req.query
+         const { id } = req.params
          const token = req.headers.authorization as string
 
          const input: GetUserDataDTO = {

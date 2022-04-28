@@ -24,7 +24,7 @@ export class UserBusiness {
             !input.username ||
             !input.email ||
             !input.password ||
-            !input.isAdmin
+            !input.isAdmin && input.isAdmin !== false
          ) {
             throw new CustomError(422, "Missing input")
          }
@@ -217,10 +217,7 @@ export class UserBusiness {
             throw new CustomError(409, "Invalid token")
          }
 
-         const result: Friend[] = await this.userDatabase.getFriends(input.id
-            ? { id: input.id }
-            : { id: isTokenValid.id }
-         )
+         const result: Friend[] = await this.userDatabase.getFriends({ id: input.id })
 
          return result
       } catch (error) {
