@@ -49,10 +49,10 @@ export class PostBusiness {
                isTokenValid.id,
                input.description,
                input.image,
-               input.likes,
+               input.likes as string,
             )
          )
-      } catch (error) {
+      } catch (error: any) {
          throw new CustomError(error.statusCode, error.message)
       }
    }
@@ -76,7 +76,7 @@ export class PostBusiness {
          const result: Post = await this.postDatabase.getPostById(input)
 
          return result
-      } catch (error) {
+      } catch (error: any) {
          throw new CustomError(error.statusCode, error.message)
       }
    }
@@ -114,7 +114,7 @@ export class PostBusiness {
          }
 
          await this.postDatabase.updatePost(input, isTokenValid.id)
-      } catch (error) {
+      } catch (error: any) {
          throw new CustomError(error.statusCode, error.message)
       }
    }
@@ -140,7 +140,7 @@ export class PostBusiness {
          }
 
          await this.postDatabase.deletePost({ id: isTokenValid.id })
-      } catch (error) {
+      } catch (error: any) {
          throw new CustomError(error.statusCode, error.message)
       }
    }
@@ -164,7 +164,7 @@ export class PostBusiness {
          const post = await this.postDatabase.likePost(input, isTokenValid.id)
 
          return post
-      } catch (error) {
+      } catch (error: any) {
          throw new CustomError(error.statusCode, error.message)
       }
    }
@@ -188,7 +188,7 @@ export class PostBusiness {
          const result: Post[] = await this.postDatabase.getTimelinePosts(input)
 
          return result
-      } catch (error) {
+      } catch (error: any) {
          console.log('error', error)
 
          throw new CustomError(error.statusCode, error.message)
@@ -213,7 +213,7 @@ export class PostBusiness {
          const result = await this.postDatabase.getPostsByUsername(input)
 
          return result
-      } catch (error) {
+      } catch (error: any) {
          throw new CustomError(error.statusCode, error.message)
       }
    }

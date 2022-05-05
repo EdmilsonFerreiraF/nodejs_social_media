@@ -58,7 +58,7 @@ export class UserBusiness {
          });
 
          return token
-      } catch (error) {
+      } catch (error: any) {
          throw new CustomError(error.statusCode, error.message)
       }
    }
@@ -91,7 +91,7 @@ export class UserBusiness {
          })
 
          return token
-      } catch (error) {
+      } catch (error: any) {
          throw new CustomError(error.statusCode, error.message)
       }
    }
@@ -124,12 +124,12 @@ export class UserBusiness {
             } else {
                cypherPassword = await this.hashGenerator.hash(input.password)
             }
+
+            input.password = cypherPassword
          }
 
-         input.password = cypherPassword
-
          await this.userDatabase.updateUser(input, isTokenValid.id)
-      } catch (error) {
+      } catch (error: any) {
          throw new CustomError(error.statusCode, error.message)
       }
    }
@@ -151,7 +151,7 @@ export class UserBusiness {
          }
 
          await this.userDatabase.deleteUser({ id: isTokenValid.id })
-      } catch (error) {
+      } catch (error: any) {
          throw new CustomError(error.statusCode, error.message)
       }
    }
@@ -174,7 +174,7 @@ export class UserBusiness {
          )
 
          return result
-      } catch (error) {
+      } catch (error: any) {
          console.log('error', error)
 
          throw new CustomError(error.statusCode, error.message)
@@ -200,7 +200,7 @@ export class UserBusiness {
          const result: User = await this.userDatabase.getUserById({id: input.id })
 
          return result
-      } catch (error) {
+      } catch (error: any) {
          throw new CustomError(error.statusCode, error.message)
       }
    }
@@ -220,7 +220,7 @@ export class UserBusiness {
          const result: Friend[] = await this.userDatabase.getFriends({ id: input.id })
 
          return result
-      } catch (error) {
+      } catch (error: any) {
          throw new CustomError(error.statusCode, error.message)
       }
    }
@@ -246,7 +246,7 @@ export class UserBusiness {
          }
 
          await this.userDatabase.followUser(input, isTokenValid.id)
-      } catch (error) {
+      } catch (error: any) {
          throw new CustomError(error.statusCode, error.message)
       }
    }
@@ -273,7 +273,7 @@ export class UserBusiness {
          const result = await this.userDatabase.unfollowUser(input, isTokenValid.id)
 
          return result
-      } catch (error) {
+      } catch (error: any) {
          throw new CustomError(error.statusCode, error.message)
       }
    }

@@ -34,7 +34,7 @@ export class UserController {
          )
 
          res.status(201).send({ token })
-      } catch (error) {
+      } catch (error: any) {
          const { statusCode, message } = error
 
          res.status(statusCode || 400).send({ message })
@@ -53,7 +53,7 @@ export class UserController {
          const token: string = await userBusiness.getUserByEmail(input)
 
          res.status(200).send({ token })
-      } catch (error) {
+      } catch (error: any) {
          const { statusCode, message } = error
 
          res.status(statusCode || 400).send({ message })
@@ -62,7 +62,7 @@ export class UserController {
 
    public async updateUser(req: Request, res: Response): Promise<void> {
       try {
-         const token = req.headers.authorization
+         const token = req.headers.authorization as string as string
 
          const { password } = req.body
 
@@ -76,7 +76,7 @@ export class UserController {
          )
 
          res.status(201).send("Your account has been updated successfully")
-      } catch (error) {
+      } catch (error: any) {
          const { statusCode, message } = error
 
          res.status(statusCode || 400).send({ message })
@@ -85,14 +85,14 @@ export class UserController {
 
    public async deleteUser(req: Request, res: Response): Promise<void> {
       try {
-         const token = req.headers.authorization as string
+         const token = req.headers.authorization as string as string as string
 
          await userBusiness.deleteUser(
             token
          )
 
          res.status(201).send("Your account has been updated successfully")
-      } catch (error) {
+      } catch (error: any) {
          const { statusCode, message } = error
 
          res.status(statusCode || 400).send({ message })
@@ -102,7 +102,7 @@ export class UserController {
    public async getUserByIdOrUsername(req: Request, res: Response): Promise<void> {
       try {
          const { username } = req.params
-         const token = req.headers.authorization as string
+         const token = req.headers.authorization as string as string as string
 
          const input: GetUserByUsernameDataDTO = {
             username: username as string
@@ -114,7 +114,7 @@ export class UserController {
          )
 
          res.status(200).send(result)
-      } catch (error) {
+      } catch (error: any) {
          const { statusCode, message } = error
          console.log('error', error)
 
@@ -125,7 +125,7 @@ export class UserController {
    public async getUserById(req: Request, res: Response): Promise<void> {
       try {
          const { id } = req.params
-         const token = req.headers.authorization as string
+         const token = req.headers.authorization as string as string as string
 
          const input: GetUserDataDTO = {
             id: id as string
@@ -137,7 +137,7 @@ export class UserController {
          )
 
          res.status(200).send(result)
-      } catch (error) {
+      } catch (error: any) {
          const { statusCode, message } = error
 
          res.status(statusCode || 400).send({ message })
@@ -147,7 +147,7 @@ export class UserController {
    public async getFriends(req: Request, res: Response): Promise<void> {
       try {
          const { id } = req.params
-         const token = req.headers.authorization as string
+         const token = req.headers.authorization as string as string as string
 
          const input: GetUserDataDTO = {
             id: id as string
@@ -159,7 +159,7 @@ export class UserController {
          )
 
          res.status(200).send(result)
-      } catch (error) {
+      } catch (error: any) {
          const { statusCode, message } = error
          res.status(statusCode || 400).send({ message })
       }
@@ -168,7 +168,7 @@ export class UserController {
    public async followUser(req: Request, res: Response): Promise<void> {
       try {
          const { id } = req.params
-         const token = req.headers.authorization as string
+         const token = req.headers.authorization as string as string as string
 
          const input: FollowUserDTO = {
             id
@@ -180,7 +180,7 @@ export class UserController {
          )
 
          res.status(200).send("You have been followed this user")
-      } catch (error) {
+      } catch (error: any) {
          const { statusCode, message } = error
          res.status(statusCode || 400).send({ message })
       }
@@ -189,7 +189,7 @@ export class UserController {
    public async unfollowUser(req: Request, res: Response): Promise<void> {
       try {
          const { id } = req.params
-         const token = req.headers.authorization as string
+         const token = req.headers.authorization as string as string as string
 
          const input: FollowUserDTO = {
             id
@@ -201,7 +201,7 @@ export class UserController {
          )
 
          res.status(200).send("You have been followed this user")
-      } catch (error) {
+      } catch (error: any) {
          const { statusCode, message } = error
          res.status(statusCode || 400).send({ message })
       }

@@ -55,7 +55,7 @@ export class PostDatabase extends BaseDatabase {
          const NewPost = new PostModel(postDocument)
 
          NewPost.save()
-      } catch (error) {
+      } catch (error: any) {
          throw new Error(error.statusCode)
       }
    }
@@ -69,7 +69,7 @@ export class PostDatabase extends BaseDatabase {
          const post = await PostModel.findOne({ id: input.id })
 
          return this.toModel(post)
-      } catch (error) {
+      } catch (error: any) {
          throw new Error(error.statusCode)
       }
    }
@@ -82,12 +82,12 @@ export class PostDatabase extends BaseDatabase {
 
          const post = await PostModel.findOne({ id: input.id })
 
-         if (post.userId !== id) {
+         if (post?.userId !== id) {
             throw new Error("You can only update your own posts")
          }
 
-         await post.updateOne({ $set: input })
-      } catch (error) {
+         await post?.updateOne({ $set: input })
+      } catch (error: any) {
          throw new Error(error.statusCode)
       }
    }
@@ -99,7 +99,7 @@ export class PostDatabase extends BaseDatabase {
          const PostModel = model<PostEntity>(this.tableName, this.postSchema)
 
          await PostModel.deleteOne({ id: input.id })
-      } catch (error) {
+      } catch (error: any) {
          throw new Error(error.statusCode)
       }
    }
@@ -110,18 +110,18 @@ export class PostDatabase extends BaseDatabase {
 
          const postModel = model<PostEntity>(this.tableName, this.postSchema)
 
-         const post = await postModel.findOne({ id: input.id })
+         const post: any = await postModel.findOne({ id: input.id })
 
          const likes: string[] = post.likes = []
 
          if (!likes.includes(userId)) {
-            await post.updateOne({ $push: { likes: userId } })
+            await post?.updateOne({ $push: { likes: userId } })
          } else {
-            await post.updateOne({ $pull: { likes: userId } })
+            await post?.updateOne({ $pull: { likes: userId } })
          }
 
          return this.toModel(post)
-      } catch (error) {
+      } catch (error: any) {
          throw new Error(error.statusCode)
       }
    }
@@ -138,13 +138,13 @@ export class PostDatabase extends BaseDatabase {
          const userPosts = await PostModel.find({ userId: currentUser?.id })
 
          const followingPosts = await Promise.all(
-            currentUser?.following.map(followingId => {
+            currentUser?.following.map((followingId: any) => {
                return PostModel.find({ userId: followingId })
             })
          )
 
          return userPosts.concat(...followingPosts).map(post => this.toModel(post))
-      } catch (error) {
+      } catch (error: any) {
          console.log('error - database', error)
          throw new Error(error.statusCode)
       }
@@ -159,7 +159,7 @@ export class PostDatabase extends BaseDatabase {
          const posts = await PostModel.find({ userId: input.username })
 
          return posts.map(post => this.toModel(post))
-      } catch (error) {
+      } catch (error: any) {
          throw new Error(error.posts)
       }
    }

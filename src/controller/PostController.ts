@@ -20,7 +20,7 @@ export class PostController {
    public async createPost(req: Request, res: Response): Promise<void> {
       try {
          const { description, image } = req.body
-         const token = req.headers.authorization
+         const token = req.headers.authorization as string
 
          const input: CreatePostDTO = {
             description,
@@ -33,7 +33,7 @@ export class PostController {
          )
 
          res.status(200).send("Post has been created")
-      } catch (error) {
+      } catch (error: any) {
          const { statusCode, message } = error
          res.status(statusCode || 400).send({ message })
       }
@@ -42,14 +42,14 @@ export class PostController {
    public async getPostById(req: Request, res: Response): Promise<void> {
       try {
          const { id } = req.params
-         const token = req.headers.authorization
+         const token = req.headers.authorization as string
 
          const input: PostCRUDDTO = { id }
 
          const result: Post = await postBusiness.getPostById(input, token)
 
          res.status(200).send(result)
-      } catch (error) {
+      } catch (error: any) {
          const { statusCode, message } = error
          res.status(statusCode || 400).send({ message })
       }
@@ -66,7 +66,7 @@ export class PostController {
             likes
          } = req.body
 
-         const token = req.headers.authorization
+         const token = req.headers.authorization as string
 
          const input: UpdatePostDDTO = { 
             id,
@@ -82,7 +82,7 @@ export class PostController {
          )
 
          res.status(200).send("Your post has been updated")
-      } catch (error) {
+      } catch (error: any) {
          const { statusCode, message } = error
          res.status(statusCode || 400).send({ message })
       }
@@ -91,7 +91,7 @@ export class PostController {
    public async deletePost(req: Request, res: Response): Promise<void> {
       try {
          const { id } = req.params
-         const token = req.headers.authorization
+         const token = req.headers.authorization as string
 
          const input: PostCRUDDTO = {
             id
@@ -103,7 +103,7 @@ export class PostController {
          )
 
          res.status(200).send("Your post has been updated")
-      } catch (error) {
+      } catch (error: any) {
          const { statusCode, message } = error
          res.status(statusCode || 400).send({ message })
       }
@@ -112,7 +112,7 @@ export class PostController {
    public async likePost(req: Request, res: Response): Promise<void> {
       try {
          const { id } = req.params
-         const token = req.headers.authorization as string
+         const token = req.headers.authorization as string as string
 
          const input: PostCRUDDTO = {
             id
@@ -128,7 +128,7 @@ export class PostController {
          } else {
             res.status(200).json("The post has been disliked")
          }
-      } catch (error) {
+      } catch (error: any) {
          const { statusCode, message } = error
          res.status(statusCode || 400).send({ message })
       }
@@ -137,7 +137,7 @@ export class PostController {
    public async getTimelinePosts(req: Request, res: Response): Promise<void> {
       try {
          const { id } = req.params
-         const token = req.headers.authorization
+         const token = req.headers.authorization as string
 
          const input: PostCRUDDTO = {
             id
@@ -149,7 +149,7 @@ export class PostController {
          )
 
          res.status(200).send(result)
-      } catch (error) {
+      } catch (error: any) {
          const { statusCode, message } = error
          res.status(statusCode || 400).send({ message })
       }
@@ -158,7 +158,7 @@ export class PostController {
    public async getPostsByUsername(req: Request, res: Response): Promise<void> {
       try {
          const { username } = req.params
-         const token = req.headers.authorization
+         const token = req.headers.authorization as string
 
          const input: GetPostsByUsernameDTO = {
             username
@@ -170,7 +170,7 @@ export class PostController {
          )
 
          res.status(200).send(result)
-      } catch (error) {
+      } catch (error: any) {
          const { statusCode, message } = error
          res.status(statusCode || 400).send({ message })
       }

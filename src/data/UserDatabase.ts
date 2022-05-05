@@ -122,7 +122,7 @@ export class UserDatabase extends BaseDatabase {
          const userModel = new UserModel(userDocument)
          
          await userModel.save()
-      } catch (error) {
+      } catch (error: any) {
          throw new Error(error.statusCode)
       }
    }
@@ -134,7 +134,7 @@ export class UserDatabase extends BaseDatabase {
          const user = await this.getUserModel().findOne({ email: input.email })
 
          return this.toModel(user)
-      } catch (error) {
+      } catch (error: any) {
          throw new Error(error.statusCode)
       }
    }
@@ -144,7 +144,7 @@ export class UserDatabase extends BaseDatabase {
          await BaseDatabase.connect
 
          await this.getUserModel().updateOne({ id }, { $set: { password: input.password } })
-      } catch (error) {
+      } catch (error: any) {
          throw new Error(error.statusCode)
       }
    }
@@ -154,7 +154,7 @@ export class UserDatabase extends BaseDatabase {
          await BaseDatabase.connect
 
          await this.getUserModel().deleteOne({ id: input.id })
-      } catch (error) {
+      } catch (error: any) {
          throw new Error(error.statusCode)
       }
    }
@@ -172,7 +172,7 @@ export class UserDatabase extends BaseDatabase {
          }
 
          return this.toModel(user)
-      } catch (error) {
+      } catch (error: any) {
          console.log('error', error)
          throw new Error(error.statusCode)
       }
@@ -185,7 +185,7 @@ export class UserDatabase extends BaseDatabase {
          const user = await this.getUserModel().findOne({ id: input.id })
 
          return this.toModel(user)
-      } catch (error) {
+      } catch (error: any) {
          throw new Error(error.statusCode)
       }
    }
@@ -194,24 +194,24 @@ export class UserDatabase extends BaseDatabase {
       try {
          await BaseDatabase.connect
 
-         const user = await this.getUserModel().findOne({ id: input.id })
+         const user: any = await this.getUserModel().findOne({ id: input.id })
 
-         const friends = await Promise.all(
-            user.following.map((friendId: string) => {
+         const friends: any = await Promise.all(
+            user?.following.map((friendId: string) => {
                return this.getUserModel().findOne({ id: friendId })
             })
          )
 
          let friendList: Friend[] = []
 
-         friends.map((friend: Friend) => {
+         friends.map((friend: any) => {
             const { id, username, profilePicture } = friend
 
             friendList.push({ id, username, profilePicture })
          })
 
          return friendList
-      } catch (error) {
+      } catch (error: any) {
          throw new Error(error.statusCode)
       }
    }
@@ -220,23 +220,23 @@ export class UserDatabase extends BaseDatabase {
       try {
          await BaseDatabase.connect
 
-         const user = await this.getUserModel().findOne({ id: input.id })
+         const user: any = await this.getUserModel().findOne({ id: input.id })
 
          if (!user) {
             throw new Error("User not found")
          }
 
-         const currentUser = await this.getUserModel().findOne({ id: userId })
+         const currentUser: any = await this.getUserModel().findOne({ id: userId })
 
-         const followers: string[] = user.followers
+         const followers: any = user?.followers
 
          if (!followers.includes(userId)) {
-            await user.updateOne({ $push: { followers: userId } })
-            await currentUser.updateOne({ $push: { following: input.id } })
+            await user?.updateOne({ $push: { followers: userId } })
+            await currentUser?.updateOne({ $push: { following: input.id } })
          } else {
             throw new Error("You have already followed this user")
          }
-      } catch (error) {
+      } catch (error: any) {
          throw new Error(error.statusCode)
       }
    }
@@ -245,23 +245,23 @@ export class UserDatabase extends BaseDatabase {
       try {
          await BaseDatabase.connect
 
-         const user = await this.getUserModel().findOne({ id: input.id })
+         const user: any = await this.getUserModel().findOne({ id: input.id })
 
          if (!user) {
             throw new Error("User not found")
          }
 
-         const currentUser = await this.getUserModel().findOne({ id: userId })
+         const currentUser: any = await this.getUserModel().findOne({ id: userId })
 
-         const followers: string[] = user.followers = []
+         const followers: any = user.followers = []
 
          if (!followers.includes(userId)) {
-            await user.updateOne({ $push: { followers: userId } })
-            await currentUser.updateOne({ $push: { following: input.id } })
+            await user?.updateOne({ $push: { followers: userId } })
+            await currentUser?.updateOne({ $push: { following: input.id } })
          } else {
             throw new Error("You have already followed this user")
          }
-      } catch (error) {
+      } catch (error: any) {
          throw new Error(error.statusCode)
       }
    }
