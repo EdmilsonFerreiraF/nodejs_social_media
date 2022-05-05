@@ -3,8 +3,8 @@ import helmet from 'helmet'
 import morgan from 'morgan'
 import cors from 'cors'
 
-import { userRouter } from './src/controller/routes/userRouter'
-import { postRouter } from './src/controller/routes/postRouter'
+import { userRouter } from './controller/routes/userRouter'
+import { postRouter } from './controller/routes/postRouter'
 
 const app = express()
 
