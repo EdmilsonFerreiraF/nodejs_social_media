@@ -9,6 +9,7 @@ export interface User {
     followers: [],
     following: [],
     description: string,
+    city: string,
     from: string,
     relationship: number
 }

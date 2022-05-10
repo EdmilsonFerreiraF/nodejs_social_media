@@ -55,6 +55,10 @@ export class UserDatabase extends BaseDatabase {
          type: String,
          max: 50
       },
+      city: {
+         type: String,
+         max: 50
+      },
       from: {
          type: String,
          max: 50
@@ -101,6 +105,7 @@ export class UserDatabase extends BaseDatabase {
             dbModel.followers,
             dbModel.following,
             dbModel.description,
+            dbModel.city,
             dbModel.from,
             dbModel.relationship
          )

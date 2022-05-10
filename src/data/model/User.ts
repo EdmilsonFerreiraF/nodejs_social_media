@@ -10,6 +10,7 @@ export class User {
         private followers?: [],
         private following?: [],
         private description?: string,
+        private city?: string,
         private from?: string,
         private relationship?: Number
     ) { }
