@@ -1,5 +1,3 @@
-import { Relationship } from "../../business/entities/user"
-
 export class User {
     constructor(
         private id: string,
@@ -13,7 +11,7 @@ export class User {
         private following?: [],
         private description?: string,
         private from?: string,
-        private relationship?: Relationship
+        private relationship?: Number
     ) { }
 
     getId() {
@@ -70,25 +68,4 @@ export interface UserInputDTO {
 
 export interface IsAdmin {
     isAdmin: boolean
-}
-
-const stringToRelationship = (input: string) => {
-    let relationship: Relationship
-
-    switch (input) {
-        case "Single":
-            relationship = Relationship.SINGLE
-            break
-        case "Dating":
-            relationship = Relationship.DATING
-            break
-        case "Married":
-            relationship = Relationship.MARRIED
-            break
-        default:
-            relationship = Relationship.DIVORCED
-            break
-    }
-
-    return relationship
 }

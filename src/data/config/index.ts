@@ -55,8 +55,7 @@ const { Schema } = mongoose
        max: 50
     },
     relationship: {
-       type: String,
-       enum: ["Single", "Dating", "Married", "Divorced"]
+       type: Number
     }
  },
     { timestamps: true }

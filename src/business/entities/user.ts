@@ -1,10 +1,3 @@
-export enum Relationship {
-    SINGLE = "Single",
-    DATING = "Dating",
-    MARRIED = "Married",
-    DIVORCED = "Divorced"
-}
-
 export interface User {
     id: string,
     username: string,
@@ -17,7 +10,7 @@ export interface User {
     following: [],
     description: string,
     from: string,
-    relationship: Relationship
+    relationship: number
 }
 
 export type SignupInputDTO = {
