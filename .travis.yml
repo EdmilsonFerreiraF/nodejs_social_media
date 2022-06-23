@@ -1,6 +1,9 @@
 language: node_js
 node_js:
   - "16.14.2"
+stages:
+- compile
+- deploy
 jobs:
   include:
     - stage: deploy
