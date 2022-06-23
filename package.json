@@ -4,10 +4,8 @@
   "main": "index.js",
   "scripts": {
     "start": "node build/index.js",
-    "test": "node --version",
     "dev": "ts-node-dev src/index.ts",
-    "build": "tsc",
-    "postinstall": "yarn build"
+    "build": "tsc"
   },
   "engines": {
     "node": "16.x"
