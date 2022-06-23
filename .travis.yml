@@ -1,0 +1,10 @@
+jobs:
+  include:
+    - script: ./test 1 # uses the default stage name "test"
+    - stage: deploy
+      script: skip     # usually you do not want to rerun any tests
+      deploy:
+        provider: heroku
+        api_key:
+          secure: "bccab0a7-73d3-4507-9f53-96c291d5aa2a"
+          # ⋮
