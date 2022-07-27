@@ -1,10 +1,11 @@
+import cors from 'cors'
 import express from 'express'
 import helmet from 'helmet'
 import morgan from 'morgan'
-import cors from 'cors'
 
-import { userRouter } from './controller/routes/userRouter'
+import { bookmarkRouter } from './controller/routes/bookmarkRouter'
 import { postRouter } from './controller/routes/postRouter'
+import { userRouter } from './controller/routes/userRouter'
 
 const app = express()
 
@@ -15,6 +16,7 @@ app.use(morgan('common'))
 
 app.use('/user', userRouter)
 app.use('/post', postRouter)
+app.use('/bookmark', bookmarkRouter)
 
 const PORT = process.env.PORT || 4000
 
