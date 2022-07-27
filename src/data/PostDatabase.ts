@@ -2,14 +2,11 @@ import mongoose, { model } from "mongoose"
 import { GetPostsByUsernameDTO, PostCRUDDTO, UpdatePostDDTO } from "../business/entities/post"
 const { Schema } = mongoose
 
-import BaseDatabase from "./BaseDatabase"
-import Post from "./model/Post"
 import { Post as PostEntity } from "../business/entities/post"
+import BaseDatabase from "./BaseDatabase"
+import UserModel from "./config"
+import Post from "./model/Post"
 import UserDatabase from "./UserDatabase"
-// import { User } from "../business/entities/user"
-import { User } from "./model/User"
-import { AuthenticationData } from "../business/services/tokenGenerator"
-import UserModel  from "./config"
 
 export class PostDatabase extends BaseDatabase {
    protected tableName: string = "post"
@@ -112,12 +109,10 @@ export class PostDatabase extends BaseDatabase {
 
          const post: any = await postModel.findOne({ id: input.id })
 
-         const likes: string[] = post.likes = []
-
-         if (!likes.includes(userId)) {
-            await post?.updateOne({ $push: { likes: userId } })
-         } else {
+         if (post.likes.includes(userId)) {
             await post?.updateOne({ $pull: { likes: userId } })
+         } else {
+            await post?.updateOne({ $push: { likes: userId } })
          }
 
          return this.toModel(post)
@@ -131,7 +126,6 @@ export class PostDatabase extends BaseDatabase {
          await BaseDatabase.connect
 
          const PostModel = model<PostEntity>(this.tableName, this.postSchema)
-         // const UserModel = model<User>(UserDatabase.getTableName(), UserModel)
 
          const currentUser: any = await UserModel.findOne({ id: input?.id })
 

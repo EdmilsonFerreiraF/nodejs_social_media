@@ -4,7 +4,7 @@ export class Post {
         private userId: string,
         private description: string,
         private image: string,
-        private likes: string,
+        private likes: string[],
     ) { }
 
     getId() {
@@ -43,7 +43,7 @@ export class Post {
         this.image = image
     }
 
-    setLikes(likes: string) {
+    setLikes(likes: string[]) {
         this.likes = likes
     }
 

@@ -1,5 +1,5 @@
 import { IdGenerator } from "./services/idGenerator"
-import { TokenGenerator, AuthenticationData } from "./services/tokenGenerator"
+import { AuthenticationData, TokenGenerator } from "./services/tokenGenerator"
 
 import { PostDatabase } from "../data/PostDatabase"
 
@@ -53,7 +53,7 @@ export class PostBusiness {
                isTokenValid.id,
                input.description,
                input.image,
-               input.likes as string,
+               input.likes as string[],
             )
          )
       } catch (error: any) {

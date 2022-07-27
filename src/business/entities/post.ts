@@ -3,13 +3,13 @@ export interface Post {
     userId: string,
     description: string,
     image: string,
-    likes: []
+    likes: string[]
 }
 
 export interface CreatePostDTO {
     description: string,
     image: string,
-    likes?: string,
+    likes?: string[],
 }
 
 export interface PostCRUDDTO {
