@@ -143,7 +143,7 @@ export class PostBusiness {
             throw new CustomError(403, "Only admins can access this feature")
          }
 
-         await this.postDatabase.deletePost({ id: isTokenValid.id })
+         await this.postDatabase.deletePost({ id: input.id })
       } catch (error: any) {
          throw new CustomError(error.statusCode, error.message)
       }
