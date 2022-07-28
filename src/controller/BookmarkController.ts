@@ -6,7 +6,7 @@ import { TokenGenerator } from "../business/services/tokenGenerator"
 import { BookmarkBusiness } from "../business/BookmarkBusiness"
 import { BookmarkDatabase } from "../data/BookmarkDatabase"
 
-import { CreateBookmarkDTO } from "../business/entities/bookmark"
+import { BookmarkCRUDDTO, CreateBookmarkDTO } from "../business/entities/bookmark"
 import { Bookmark } from "../data/model/Bookmark"
 
 const bookmarkBusiness =
@@ -49,6 +49,28 @@ export class BookmarkController {
          )
 
          res.status(200).send(result)
+      } catch (error: any) {
+         const { statusCode, message } = error
+         res.status(statusCode || 400).send({ message })
+      }
+   }
+
+
+   public async deleteBookmarkByPostId(req: Request, res: Response): Promise<void> {
+      try {
+         const { postId } = req.params
+         const token = req.headers.authorization as string
+
+         const input: BookmarkCRUDDTO = {
+            postId
+         }
+
+         await bookmarkBusiness.deleteBookmarkByPostId(
+            input,
+            token
+         )
+
+         res.status(200).send("Bookmark has been deleted")
       } catch (error: any) {
          const { statusCode, message } = error
          res.status(statusCode || 400).send({ message })

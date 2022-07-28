@@ -77,6 +77,32 @@ export class BookmarkBusiness {
          throw new CustomError(error.statusCode, error.message)
       }
    }
+
+   public async deleteBookmarkByPostId(input: any, token: string): Promise<void> {
+      try {
+         if (!input.postId) {
+            throw new CustomError(422, "Missing postId")
+         }
+
+         if (!token) {
+            throw new CustomError(422, "Missing token")
+         }
+
+         const isTokenValid: AuthenticationData = this.tokenGenerator.verify(token.includes("Bearer ") ? token.replace("Bearer ", "") : token)
+
+         if (!isTokenValid) {
+            throw new CustomError(409, "Invalid token")
+         }
+
+         if (isTokenValid.isAdmin !== true) {
+            throw new CustomError(403, "Only admins can access this feature")
+         }
+
+         await this.bookmarkDatabase.deleteBookmarkByPostId({ postId: input.postId }, isTokenValid.id)
+      } catch (error: any) {
+         throw new CustomError(error.statusCode, error.message)
+      }
+   }
 }
 
 export default new BookmarkBusiness(new IdGenerator(), new BookmarkDatabase(), new TokenGenerator())

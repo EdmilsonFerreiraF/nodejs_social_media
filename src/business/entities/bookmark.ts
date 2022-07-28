@@ -7,3 +7,7 @@ export interface Bookmark {
 export interface CreateBookmarkDTO {
     postId: string
 }
+
+export interface BookmarkCRUDDTO {
+    postId: string
+}

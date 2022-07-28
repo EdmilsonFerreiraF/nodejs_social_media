@@ -1,7 +1,7 @@
 import mongoose, { model } from "mongoose"
 const { Schema } = mongoose
 
-import { Bookmark as BookmarkEntity } from "../business/entities/bookmark"
+import { Bookmark as BookmarkEntity, BookmarkCRUDDTO } from "../business/entities/bookmark"
 import BaseDatabase from "./BaseDatabase"
 import Bookmark from "./model/Bookmark"
 
@@ -58,6 +58,18 @@ export class BookmarkDatabase extends BaseDatabase {
             return userBookmarks.map(bookmarks => this.toModel(bookmarks))
         } catch (error: any) {
             console.log('error - database', error)
+            throw new Error(error.statusCode)
+        }
+    }
+
+    public async deleteBookmarkByPostId(input: BookmarkCRUDDTO, userId: string): Promise<void> {
+        try {
+            await BaseDatabase.connect
+
+            const BookmarkModel = model<BookmarkEntity>(this.tableName, this.bookmarkSchema)
+
+            await BookmarkModel.deleteOne({ postId: input.postId, userId })
+        } catch (error: any) {
             throw new Error(error.statusCode)
         }
     }
