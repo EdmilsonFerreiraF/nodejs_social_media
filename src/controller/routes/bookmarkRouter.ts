@@ -5,3 +5,4 @@ import bookmarkController from "../BookmarkController"
 export const bookmarkRouter = express.Router()
 
 bookmarkRouter.post("/", bookmarkController.createBookmark)
+bookmarkRouter.get("/", bookmarkController.getBookmarksByUserId)

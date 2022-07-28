@@ -1,19 +1,17 @@
 import mongoose, { model } from "mongoose"
 const { Schema } = mongoose
 
-import { Bookmark as BookmarkEntity, CreateBookmarkDTO } from "../business/entities/bookmark"
+import { Bookmark as BookmarkEntity } from "../business/entities/bookmark"
 import BaseDatabase from "./BaseDatabase"
-import UserModel from "./config"
 import Bookmark from "./model/Bookmark"
-import UserDatabase from "./UserDatabase"
 
 export class BookmarkDatabase extends BaseDatabase {
     protected tableName: string = "bookmark"
 
     protected bookmarkSchema = new Schema({
         id: String,
-        userId: String,
         postId: String,
+        userId: String,
     },
         { timestamps: true }
     )
@@ -23,18 +21,18 @@ export class BookmarkDatabase extends BaseDatabase {
             dbModel &&
             new Bookmark(
                 dbModel.id,
-                dbModel.userId,
                 dbModel.postId,
+                dbModel.userId,
             )
         )
     }
 
-    public async createBookmark(input: Bookmark, userId: string): Promise<void> {
+    public async createBookmark(input: Bookmark): Promise<void> {
         try {
             const bookmarkDocument = {
                 id: input.getId(),
                 postId: input.getPostId(),
-                userId,
+                userId: input.getUserId(),
             }
 
             await BaseDatabase.connect
@@ -44,6 +42,22 @@ export class BookmarkDatabase extends BaseDatabase {
 
             NewBookmark.save()
         } catch (error: any) {
+            throw new Error(error.statusCode)
+        }
+    }
+
+    public async getBookmarksByUserId(userId: string): Promise<any> {
+        try {
+            await BaseDatabase.connect
+
+            const BookmarksModel = model<BookmarkEntity>(this.tableName, this.bookmarkSchema)
+
+            const userBookmarks = await BookmarksModel.find()
+            console.log('userBookmarks', userBookmarks)
+
+            return userBookmarks.map(bookmarks => this.toModel(bookmarks))
+        } catch (error: any) {
+            console.log('error - database', error)
             throw new Error(error.statusCode)
         }
     }

@@ -39,6 +39,21 @@ export class BookmarkController {
          res.status(statusCode || 400).send({ message })
       }
    }
+
+   public async getBookmarksByUserId(req: Request, res: Response): Promise<void> {
+      try {
+         const token = req.headers.authorization as string
+
+         const result: Bookmark[] = await bookmarkBusiness.getBookmarksByUserId(
+            token
+         )
+
+         res.status(200).send(result)
+      } catch (error: any) {
+         const { statusCode, message } = error
+         res.status(statusCode || 400).send({ message })
+      }
+   }
 }
 
 export default new BookmarkController()
