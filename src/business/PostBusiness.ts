@@ -22,6 +22,7 @@ export class PostBusiness {
       try {
          if (
             !input.description ||
+            !input.audience ||
             !input.image
          ) {
             console.log('PostBusiness - 422')
@@ -52,6 +53,7 @@ export class PostBusiness {
                id,
                isTokenValid.id,
                input.description,
+               input.audience,
                input.image,
                input.likes as string[],
             )
@@ -97,6 +99,7 @@ export class PostBusiness {
             !input.id &&
             !input.userId &&
             !input.description &&
+            !input.audience &&
             !input.image &&
             !input.likes
          ) {

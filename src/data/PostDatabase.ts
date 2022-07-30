@@ -15,6 +15,7 @@ export class PostDatabase extends BaseDatabase {
       id: String,
       userId: String,
       description: String,
+      audience: String,
       image: String,
       likes: [String],
    },
@@ -30,6 +31,7 @@ export class PostDatabase extends BaseDatabase {
             dbModel.id,
             dbModel.userId,
             dbModel.description,
+            dbModel.audience,
             dbModel.image,
             dbModel.likes
          )
@@ -42,6 +44,7 @@ export class PostDatabase extends BaseDatabase {
             id: input.getId(),
             userId: input.getUserId(),
             description: input.getDescription(),
+            audience: input.getAudience(),
             image: input.getImage(),
             likes: input.getLikes()
          }

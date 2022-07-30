@@ -19,11 +19,12 @@ const postBusiness =
 export class PostController {
    public async createPost(req: Request, res: Response): Promise<void> {
       try {
-         const { description, image } = req.body
+         const { description, audience, image } = req.body
          const token = req.headers.authorization as string
 
          const input: CreatePostDTO = {
             description,
+            audience,
             image
          }
 
@@ -59,21 +60,23 @@ export class PostController {
       try {
          const { id } = req.params
 
-         const { 
+         const {
             userId,
             description,
+            audience,
             image,
-            likes
+            likes,
          } = req.body
 
          const token = req.headers.authorization as string
 
-         const input: UpdatePostDDTO = { 
+         const input: UpdatePostDDTO = {
             id,
             userId,
             description,
+            audience,
             image,
-            likes
+            likes,
          }
 
          await postBusiness.updatePost(
@@ -148,6 +151,7 @@ export class PostController {
             token
          )
 
+         console.log('post', result)
          res.status(200).send(result)
       } catch (error: any) {
          const { statusCode, message } = error

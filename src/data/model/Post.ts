@@ -3,6 +3,7 @@ export class Post {
         private id: string,
         private userId: string,
         private description: string,
+        private audience: string,
         private image: string,
         private likes: string[],
     ) { }
@@ -17,6 +18,10 @@ export class Post {
 
     getDescription() {
         return this.description
+    }
+
+    getAudience() {
+        return this.audience
     }
 
     getImage() {
@@ -48,7 +53,7 @@ export class Post {
     }
 
     static toPostModel(post: any): Post {
-        return new Post(post.id, post.userId, post.description, post.image, post.likes)
+        return new Post(post.id, post.userId, post.description, post.audience, post.image, post.likes)
     }
 }
 
