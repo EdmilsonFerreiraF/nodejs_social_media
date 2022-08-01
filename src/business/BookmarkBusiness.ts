@@ -25,12 +25,10 @@ export class BookmarkBusiness {
          if (
             !input.postId
          ) {
-            console.log('BookmarkBusiness - 422')
             throw new CustomError(422, "Missing input")
          }
 
          if (!token) {
-            console.log('BookmarkBusiness - 422')
             throw new CustomError(422, "Missing token")
          }
 

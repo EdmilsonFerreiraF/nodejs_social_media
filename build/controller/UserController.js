@@ -96,7 +96,6 @@ class UserController {
             }
             catch (error) {
                 const { statusCode, message } = error;
-                console.log('error', error);
                 res.status(statusCode || 400).send({ message });
             }
         });

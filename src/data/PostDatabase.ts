@@ -144,7 +144,6 @@ export class PostDatabase extends BaseDatabase {
 
          return userPosts.concat(...followingPosts).map(post => this.toModel(post))
       } catch (error: any) {
-         console.log('error - database', error)
          throw new Error(error.statusCode)
       }
    }

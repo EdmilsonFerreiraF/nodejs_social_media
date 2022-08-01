@@ -154,7 +154,6 @@ class PostDatabase extends BaseDatabase_1.default {
                 return userPosts.concat(...followingPosts).map(post => this.toModel(post));
             }
             catch (error) {
-                console.log('error - database', error);
                 throw new Error(error.statusCode);
             }
         });

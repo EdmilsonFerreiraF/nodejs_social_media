@@ -53,11 +53,9 @@ export class BookmarkDatabase extends BaseDatabase {
             const BookmarksModel = model<BookmarkEntity>(this.tableName, this.bookmarkSchema)
 
             const userBookmarks = await BookmarksModel.find()
-            console.log('userBookmarks', userBookmarks)
 
             return userBookmarks.map(bookmarks => this.toModel(bookmarks))
         } catch (error: any) {
-            console.log('error - database', error)
             throw new Error(error.statusCode)
         }
     }

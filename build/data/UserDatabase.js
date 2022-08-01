@@ -162,7 +162,6 @@ class UserDatabase extends BaseDatabase_1.default {
                 return this.toModel(user);
             }
             catch (error) {
-                console.log('error', error);
                 throw new Error(error.statusCode);
             }
         });

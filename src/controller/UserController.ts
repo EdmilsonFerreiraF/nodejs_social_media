@@ -116,8 +116,7 @@ export class UserController {
          res.status(200).send(result)
       } catch (error: any) {
          const { statusCode, message } = error
-         console.log('error', error)
-
+         
          res.status(statusCode || 400).send({ message })
       }
    }

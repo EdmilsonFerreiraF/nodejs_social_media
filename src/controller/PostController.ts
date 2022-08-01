@@ -151,11 +151,9 @@ export class PostController {
             token
          )
 
-         console.log('post', result)
          res.status(200).send(result)
       } catch (error: any) {
          const { statusCode, message } = error
-         console.log('message', message)
          res.status(statusCode || 400).send({ message })
       }
    }

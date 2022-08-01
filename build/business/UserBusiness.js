@@ -148,7 +148,6 @@ class UserBusiness {
                 return result;
             }
             catch (error) {
-                console.log('error', error);
                 throw new CustomError_1.CustomError(error.statusCode, error.message);
             }
         });

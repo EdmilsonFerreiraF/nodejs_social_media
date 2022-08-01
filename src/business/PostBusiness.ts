@@ -25,26 +25,22 @@ export class PostBusiness {
             !input.audience ||
             !input.image
          ) {
-            console.log('PostBusiness - 422')
             throw new CustomError(422, "Missing input")
          }
 
          const id: string = this.idGenerator.generate()
 
          if (!token) {
-            console.log('PostBusiness - 422')
             throw new CustomError(422, "Missing token")
          }
 
          const isTokenValid: AuthenticationData = this.tokenGenerator.verify(token.includes("Bearer ") ? token.replace("Bearer ", "") : token)
 
          if (!isTokenValid) {
-            console.log('PostBusiness - 409')
             throw new CustomError(409, "Invalid token")
          }
 
          if (isTokenValid.isAdmin !== true) {
-            console.log('PostBusiness - 422')
             throw new CustomError(422, "Only admins can access this feature")
          }
 
@@ -196,8 +192,6 @@ export class PostBusiness {
 
          return result
       } catch (error: any) {
-         console.log('error', error)
-
          throw new CustomError(error.statusCode, error.message)
       }
    }

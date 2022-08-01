@@ -177,7 +177,6 @@ export class UserDatabase extends BaseDatabase {
 
          return this.toModel(user)
       } catch (error: any) {
-         console.log('error', error)
          throw new Error(error.statusCode)
       }
    }

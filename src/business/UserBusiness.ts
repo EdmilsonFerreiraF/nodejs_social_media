@@ -175,8 +175,6 @@ export class UserBusiness {
 
          return result
       } catch (error: any) {
-         console.log('error', error)
-
          throw new CustomError(error.statusCode, error.message)
       }
    }

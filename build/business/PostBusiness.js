@@ -26,21 +26,17 @@ class PostBusiness {
             try {
                 if (!input.description ||
                     !input.image) {
-                    console.log('PostBusiness - 422');
                     throw new CustomError_1.CustomError(422, "Missing input");
                 }
                 const id = this.idGenerator.generate();
                 if (!token) {
-                    console.log('PostBusiness - 422');
                     throw new CustomError_1.CustomError(422, "Missing token");
                 }
                 const isTokenValid = this.tokenGenerator.verify(token.includes("Bearer ") ? token.replace("Bearer ", "") : token);
                 if (!isTokenValid) {
-                    console.log('PostBusiness - 409');
                     throw new CustomError_1.CustomError(409, "Invalid token");
                 }
                 if (isTokenValid.isAdmin !== true) {
-                    console.log('PostBusiness - 422');
                     throw new CustomError_1.CustomError(422, "Only admins can access this feature");
                 }
                 yield this.postDatabase.createPost(new Post_1.Post(id, isTokenValid.id, input.description, input.image, input.likes));
@@ -162,7 +158,6 @@ class PostBusiness {
                 return result;
             }
             catch (error) {
-                console.log('error', error);
                 throw new CustomError_1.CustomError(error.statusCode, error.message);
             }
         });
