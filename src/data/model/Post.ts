@@ -6,6 +6,8 @@ export class Post {
         private audience: string,
         private image: string,
         private likes: string[],
+        private createdAt?: string,
+        private updatedAt?: string,
     ) { }
 
     getId() {
@@ -32,6 +34,14 @@ export class Post {
         return this.likes
     }
 
+    getCreatedAt() {
+        return this.createdAt
+    }
+
+    getUpdatedAt() {
+        return this.updatedAt
+    }
+
     setId(id: string) {
         this.id = id
     }
@@ -52,8 +62,16 @@ export class Post {
         this.likes = likes
     }
 
+    setCreatedAt(createdAt: string) {
+        this.createdAt = createdAt
+    }
+
+    setUpdatedAt(updatedAt: string) {
+        this.updatedAt = updatedAt
+    }
+
     static toPostModel(post: any): Post {
-        return new Post(post.id, post.userId, post.description, post.audience, post.image, post.likes)
+        return new Post(post.id, post.userId, post.description, post.audience, post.image, post.likes, post.createdAt, post.updatedAt)
     }
 }
 

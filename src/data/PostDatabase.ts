@@ -33,7 +33,9 @@ export class PostDatabase extends BaseDatabase {
             dbModel.description,
             dbModel.audience,
             dbModel.image,
-            dbModel.likes
+            dbModel.likes,
+            dbModel.createdAt,
+            dbModel.updatedAt
          )
       )
    }
@@ -162,7 +164,7 @@ export class PostDatabase extends BaseDatabase {
          if (isFriendOfFriends)
             isFriendOfFriends = await UserModel.findOne({ followers: { $all: [input.userId, userId] } })
 
-         return publicPosts.concat(...friendPosts, ...friendOfFriendsPosts).map(post => this.toModel(post))
+         return publicPosts.concat(...friendPosts, ...friendOfFriendsPosts)
       } catch (error: any) {
          throw new Error(error.posts)
       }
