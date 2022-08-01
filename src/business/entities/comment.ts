@@ -1,7 +1,7 @@
 export interface Comment {
     id: string
-    userId: string
     postId: string
+    userId: string
     content: string
 }
 
@@ -10,8 +10,6 @@ export interface CreateCommentDTO {
     content: string
 }
 
-export interface CommentCRUDDTO {
-    userId: string
+export interface GetCommentDTO {
     postId: string
-    content: string
 }

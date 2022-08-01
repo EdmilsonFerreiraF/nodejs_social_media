@@ -1,7 +1,7 @@
 import mongoose, { model } from "mongoose"
 const { Schema } = mongoose
 
-import { Comment as CommentEntity, CommentCRUDDTO } from "../business/entities/comment"
+import { Comment as CommentEntity, GetCommentDTO } from "../business/entities/comment"
 import BaseDatabase from "./BaseDatabase"
 import Comment from "./model/Comment"
 
@@ -44,6 +44,21 @@ export class CommentDatabase extends BaseDatabase {
             const NewComment = new CommentModel(commentDocument)
 
             NewComment.save()
+        } catch (error: any) {
+            throw new Error(error.statusCode)
+        }
+    }
+
+    public async getCommentsByPostId(input: GetCommentDTO, token: string): Promise<any> {
+        try {
+            await BaseDatabase.connect
+
+            const CommentsModel = model<Comment>(this.tableName, this.commentSchema)
+
+            const comments = await CommentsModel.find({ postId: input.postId })
+
+            console.log('comments', comments)
+            return comments.map(comments => this.toModel(comments))
         } catch (error: any) {
             throw new Error(error.statusCode)
         }

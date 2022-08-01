@@ -1,7 +1,8 @@
 import express from "express"
 
-import commentController from "../BookmarkController"
+import commentController from "../CommentController"
 
 export const commentRouter = express.Router()
 
-commentRouter.post("/", commentController.createBookmark)
+commentRouter.post("/", commentController.createComment)
+commentRouter.get("/:postId", commentController.getCommentsByPostId)
