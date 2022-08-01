@@ -6,7 +6,7 @@ import { TokenGenerator } from "../business/services/tokenGenerator"
 import { PostBusiness } from "../business/PostBusiness"
 import { PostDatabase } from "../data/PostDatabase"
 
-import { CreatePostDTO, GetPostsByUsernameDTO, PostCRUDDTO, UpdatePostDDTO } from "../business/entities/post"
+import { CreatePostDTO, GetPostsByUserIDDTO, PostCRUDDTO, UpdatePostDDTO } from "../business/entities/post"
 import { Post } from "../data/model/Post"
 
 const postBusiness =
@@ -155,20 +155,21 @@ export class PostController {
          res.status(200).send(result)
       } catch (error: any) {
          const { statusCode, message } = error
+         console.log('message', message)
          res.status(statusCode || 400).send({ message })
       }
    }
 
-   public async getPostsByUsername(req: Request, res: Response): Promise<void> {
+   public async getPostsByUserId(req: Request, res: Response): Promise<void> {
       try {
-         const { username } = req.params
+         const { userId } = req.params
          const token = req.headers.authorization as string
 
-         const input: GetPostsByUsernameDTO = {
-            username
+         const input: GetPostsByUserIDDTO = {
+            userId
          }
 
-         const result = await postBusiness.getPostsByUsername(
+         const result = await postBusiness.getPostsByUserId(
             input,
             token
          )

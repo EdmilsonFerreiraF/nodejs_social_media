@@ -4,7 +4,7 @@ import { AuthenticationData, TokenGenerator } from "./services/tokenGenerator"
 import { PostDatabase } from "../data/PostDatabase"
 
 import { Post } from "../data/model/Post"
-import { CreatePostDTO, GetPostsByUsernameDTO, PostCRUDDTO, UpdatePostDDTO } from "./entities/post"
+import { CreatePostDTO, GetPostsByUserIDDTO, PostCRUDDTO, UpdatePostDDTO } from "./entities/post"
 
 import { CustomError } from "../errors/CustomError"
 
@@ -201,9 +201,10 @@ export class PostBusiness {
          throw new CustomError(error.statusCode, error.message)
       }
    }
-   public async getPostsByUsername(input: GetPostsByUsernameDTO, token: string) {
+
+   public async getPostsByUserId(input: GetPostsByUserIDDTO, token: string) {
       try {
-         if (!input.username) {
+         if (!input.userId) {
             throw new CustomError(417, "Missing input")
          }
 
@@ -217,7 +218,7 @@ export class PostBusiness {
             throw new CustomError(409, "Invalid token")
          }
 
-         const result = await this.postDatabase.getPostsByUsername(input)
+         const result = await this.postDatabase.getPostsByUserId(input, isTokenValid.id)
 
          return result
       } catch (error: any) {

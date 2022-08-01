@@ -1,5 +1,5 @@
 import mongoose, { model } from "mongoose"
-import { GetPostsByUsernameDTO, PostCRUDDTO, UpdatePostDDTO } from "../business/entities/post"
+import { GetPostsByUserIDDTO, PostCRUDDTO, UpdatePostDDTO } from "../business/entities/post"
 const { Schema } = mongoose
 
 import { Post as PostEntity } from "../business/entities/post"
@@ -147,15 +147,22 @@ export class PostDatabase extends BaseDatabase {
       }
    }
 
-   public async getPostsByUsername(input: GetPostsByUsernameDTO): Promise<Post[]> {
+   public async getPostsByUserId(input: GetPostsByUserIDDTO, userId: string): Promise<any> {
       try {
          await BaseDatabase.connect
 
          const PostModel = model<PostEntity>(this.tableName, this.postSchema)
 
-         const posts = await PostModel.find({ userId: input.username })
+         let isFriendOfFriends: any = []
 
-         return posts.map(post => this.toModel(post))
+         const publicPosts = await PostModel.find({ userId: input.userId, audience: "PUBLIC" })
+         const friendPosts = await PostModel.find({ userId: input.userId, audience: "FRIENDS" })
+         const friendOfFriendsPosts = await PostModel.find({ userId: input.userId, audience: "FRIEND_OF_FRIENDS" })
+
+         if (isFriendOfFriends)
+            isFriendOfFriends = await UserModel.findOne({ followers: { $all: [input.userId, userId] } })
+
+         return publicPosts.concat(...friendPosts, ...friendOfFriendsPosts).map(post => this.toModel(post))
       } catch (error: any) {
          throw new Error(error.posts)
       }

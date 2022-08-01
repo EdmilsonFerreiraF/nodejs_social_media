@@ -197,7 +197,7 @@ export class UserBusiness {
             throw new CustomError(409, "Invalid token")
          }
 
-         const result: User = await this.userDatabase.getUserById({id: input.id })
+         const result: User = await this.userDatabase.getUserById({ id: input.id })
 
          return result
       } catch (error: any) {
