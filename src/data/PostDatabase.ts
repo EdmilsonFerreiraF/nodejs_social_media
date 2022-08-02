@@ -40,7 +40,7 @@ export class PostDatabase extends BaseDatabase {
       )
    }
 
-   public async createPost(input: Post): Promise<void> {
+   public async createPost(input: Post): Promise<Post> {
       try {
          const postDocument = {
             id: input.getId(),
@@ -57,6 +57,9 @@ export class PostDatabase extends BaseDatabase {
          const NewPost = new PostModel(postDocument)
 
          NewPost.save()
+
+         console.log('this.toModel(NewPost)', this.toModel(NewPost))
+         return this.toModel(NewPost)
       } catch (error: any) {
          throw new Error(error.statusCode)
       }

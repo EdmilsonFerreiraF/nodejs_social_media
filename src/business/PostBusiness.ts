@@ -18,7 +18,7 @@ export class PostBusiness {
    public async createPost(
       input: CreatePostDTO,
       token: string
-   ): Promise<void> {
+   ): Promise<Post> {
       try {
          if (
             !input.description ||
@@ -44,7 +44,7 @@ export class PostBusiness {
             throw new CustomError(422, "Only admins can access this feature")
          }
 
-         await this.postDatabase.createPost(
+         const result = await this.postDatabase.createPost(
             new Post(
                id,
                isTokenValid.id,
@@ -54,6 +54,8 @@ export class PostBusiness {
                input.likes as string[],
             )
          )
+
+         return result
       } catch (error: any) {
          throw new CustomError(error.statusCode, error.message)
       }

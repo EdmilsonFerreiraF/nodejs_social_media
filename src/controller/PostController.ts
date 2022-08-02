@@ -28,12 +28,12 @@ export class PostController {
             image
          }
 
-         await postBusiness.createPost(
+         const result = await postBusiness.createPost(
             input,
             token
          )
 
-         res.status(200).send("Post has been created")
+         res.status(200).send(result)
       } catch (error: any) {
          const { statusCode, message } = error
          res.status(statusCode || 400).send({ message })
