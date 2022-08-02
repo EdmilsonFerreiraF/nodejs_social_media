@@ -29,7 +29,7 @@ export class CommentDatabase extends BaseDatabase {
         )
     }
 
-    public async createComment(input: Comment): Promise<void> {
+    public async createComment(input: Comment): Promise<Comment> {
         try {
             const commentDocument = {
                 id: input.getId(),
@@ -44,6 +44,9 @@ export class CommentDatabase extends BaseDatabase {
             const NewComment = new CommentModel(commentDocument)
 
             NewComment.save()
+
+            console.log('this.toModel(NewComment)', this.toModel(NewComment))
+            return this.toModel(NewComment)
         } catch (error: any) {
             throw new Error(error.statusCode)
         }

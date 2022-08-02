@@ -27,12 +27,12 @@ export class CommentController {
             content
          }
 
-         await commentBusiness.createComment(
+         const result = await commentBusiness.createComment(
             input,
             token
          )
 
-         res.status(200).send("Comment has been created")
+         res.status(200).send(result)
       } catch (error: any) {
          const { statusCode, message } = error
          res.status(statusCode || 400).send({ message })

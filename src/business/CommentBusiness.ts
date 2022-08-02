@@ -18,7 +18,7 @@ export class CommentBusiness {
     public async createComment(
         input: CreateCommentDTO,
         token: string
-    ): Promise<void> {
+    ): Promise<Comment> {
         try {
             if (
                 !input.postId ||
@@ -43,7 +43,7 @@ export class CommentBusiness {
                 throw new CustomError(422, "Only admins can access this feature")
             }
 
-            await this.commentDatabase.createComment(
+            const result = await this.commentDatabase.createComment(
                 new Comment(
                     id,
                     input.postId,
@@ -51,6 +51,8 @@ export class CommentBusiness {
                     input.content
                 )
             )
+
+            return result
         } catch (error: any) {
             throw new CustomError(error.statusCode, error.message)
         }
