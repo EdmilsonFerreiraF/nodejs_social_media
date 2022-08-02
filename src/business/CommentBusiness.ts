@@ -47,7 +47,7 @@ export class CommentBusiness {
                 new Comment(
                     id,
                     input.postId,
-                    isTokenValid.id,
+                    isTokenValid.username,
                     input.content
                 )
             )

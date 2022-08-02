@@ -11,7 +11,7 @@ export class CommentDatabase extends BaseDatabase {
     protected commentSchema = new Schema({
         id: String,
         postId: String,
-        userId: String,
+        username: String,
         content: String,
     },
         { timestamps: true }
@@ -23,7 +23,7 @@ export class CommentDatabase extends BaseDatabase {
             new Comment(
                 dbModel.id,
                 dbModel.postId,
-                dbModel.userId,
+                dbModel.username,
                 dbModel.content,
             )
         )
@@ -34,7 +34,7 @@ export class CommentDatabase extends BaseDatabase {
             const commentDocument = {
                 id: input.getId(),
                 postId: input.getPostId(),
-                userId: input.getUserId(),
+                username: input.getUsername(),
                 content: input.getContent(),
             }
 

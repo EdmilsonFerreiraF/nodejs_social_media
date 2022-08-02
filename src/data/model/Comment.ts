@@ -2,7 +2,7 @@ export class Comment {
     constructor(
         private id: string,
         private postId: string,
-        private userId: string,
+        private username: string,
         private content: string,
     ) { }
 
@@ -14,8 +14,8 @@ export class Comment {
         return this.postId
     }
 
-    getUserId() {
-        return this.userId
+    getUsername() {
+        return this.username
     }
 
     getContent() {
@@ -30,8 +30,8 @@ export class Comment {
         this.postId = postId
     }
 
-    setUserId(userId: string) {
-        this.userId = userId
+    setUsername(username: string) {
+        this.username = username
     }
 
     setContent(content: string) {
@@ -39,7 +39,7 @@ export class Comment {
     }
 
     static toCommentModel(comment: any): Comment {
-        return new Comment(comment.id, comment.postId, comment.userId, comment.content)
+        return new Comment(comment.id, comment.postId, comment.username, comment.content)
     }
 }
 
