@@ -27,7 +27,7 @@ export class BookmarkDatabase extends BaseDatabase {
         )
     }
 
-    public async createBookmark(input: Bookmark): Promise<void> {
+    public async createBookmark(input: Bookmark): Promise<Bookmark> {
         try {
             const bookmarkDocument = {
                 id: input.getId(),
@@ -41,6 +41,9 @@ export class BookmarkDatabase extends BaseDatabase {
             const NewBookmark = new BookmarkModel(bookmarkDocument)
 
             NewBookmark.save()
+
+            console.log('this.toModel(NewBookmark)', this.toModel(NewBookmark))
+            return this.toModel(NewBookmark)
         } catch (error: any) {
             throw new Error(error.statusCode)
         }

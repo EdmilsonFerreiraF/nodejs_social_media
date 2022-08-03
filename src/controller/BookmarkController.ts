@@ -28,12 +28,12 @@ export class BookmarkController {
             postId,
          }
 
-         await bookmarkBusiness.createBookmark(
+         const result = await bookmarkBusiness.createBookmark(
             input,
             token
          )
 
-         res.status(200).send("Bookmark has been created")
+         res.status(200).send(result)
       } catch (error: any) {
          const { statusCode, message } = error
          res.status(statusCode || 400).send({ message })

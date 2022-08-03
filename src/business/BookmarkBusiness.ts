@@ -20,7 +20,7 @@ export class BookmarkBusiness {
    public async createBookmark(
       input: CreateBookmarkDTO,
       token: string
-   ): Promise<void> {
+   ): Promise<Bookmark> {
       try {
          if (
             !input.postId
@@ -44,13 +44,15 @@ export class BookmarkBusiness {
             throw new CustomError(422, "Only admins can access this feature")
          }
 
-         await this.bookmarkDatabase.createBookmark(
+         const result = await this.bookmarkDatabase.createBookmark(
             new Bookmark(
                id,
                input.postId,
                isTokenValid.id,
             )
          )
+
+         return result
       } catch (error: any) {
          throw new CustomError(error.statusCode, error.message)
       }
