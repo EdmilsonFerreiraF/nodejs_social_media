@@ -116,7 +116,7 @@ export class UserController {
          res.status(200).send(result)
       } catch (error: any) {
          const { statusCode, message } = error
-         
+
          res.status(statusCode || 400).send({ message })
       }
    }
@@ -158,6 +158,27 @@ export class UserController {
          )
 
          res.status(200).send(result)
+      } catch (error: any) {
+         const { statusCode, message } = error
+         res.status(statusCode || 400).send({ message })
+      }
+   }
+
+   public async addFriend(req: Request, res: Response): Promise<void> {
+      try {
+         const { id } = req.params
+         const token = req.headers.authorization as string as string as string
+
+         const input: FollowUserDTO = {
+            id
+         }
+
+         await userBusiness.addFriend(
+            input,
+            token
+         )
+
+         res.status(200).send("You have been added a friend")
       } catch (error: any) {
          const { statusCode, message } = error
          res.status(statusCode || 400).send({ message })
