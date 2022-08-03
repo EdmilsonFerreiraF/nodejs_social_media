@@ -6,6 +6,7 @@ export interface User {
     isAdmin: boolean,
     profilePicture: string,
     coverPicture: string,
+    friends: string[],
     followers: [],
     following: [],
     description: string,

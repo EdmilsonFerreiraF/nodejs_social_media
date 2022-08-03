@@ -39,6 +39,10 @@ export class UserDatabase extends BaseDatabase {
          type: String,
          default: ""
       },
+      friends: {
+         type: [String],
+         default: []
+      },
       followers: {
          type: [String],
          default: []
@@ -102,6 +106,7 @@ export class UserDatabase extends BaseDatabase {
             dbModel.isAdmin,
             dbModel.profilePicture,
             dbModel.coverPicture,
+            dbModel.friends,
             dbModel.followers,
             dbModel.following,
             dbModel.description,

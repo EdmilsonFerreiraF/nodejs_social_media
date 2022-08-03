@@ -7,6 +7,7 @@ export class User {
         private isAdmin: boolean,
         private profilePicture?: string,
         private coverPicture?: string,
+        private friends?: [],
         private followers?: [],
         private following?: [],
         private description?: string,
