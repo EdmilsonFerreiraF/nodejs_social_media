@@ -5,7 +5,7 @@ const { Schema } = mongoose
 import BaseDatabase from "./BaseDatabase"
 import { User as UserEntity } from "../business/entities/user"
 import { User } from "./model/User"
-import UserModel  from "./config"
+import UserModel from "./config"
 
 export class UserDatabase extends BaseDatabase {
    protected userSchema = new Schema<UserEntity>({
@@ -69,13 +69,13 @@ export class UserDatabase extends BaseDatabase {
       },
       relationship: {
          type: Number
-      }
+      },
    },
       { timestamps: true }
    )
-   
+
    protected tableName: string = "user"
-   
+
    constructor(
 
    ) {
@@ -112,7 +112,7 @@ export class UserDatabase extends BaseDatabase {
             dbModel.description,
             dbModel.city,
             dbModel.from,
-            dbModel.relationship
+            dbModel.relationship,
          )
       )
    }
@@ -129,7 +129,7 @@ export class UserDatabase extends BaseDatabase {
 
          await BaseDatabase.connect
          const userModel = new UserModel(userDocument)
-         
+
          await userModel.save()
       } catch (error: any) {
          throw new Error(error.statusCode)
@@ -175,9 +175,9 @@ export class UserDatabase extends BaseDatabase {
          let user
 
          if (input.username) {
-            user = await this.getUserModel().findOne({ username: input.username } )
+            user = await this.getUserModel().findOne({ username: input.username })
          } else {
-            user = await this.getUserModel().findOne({ id: input.id } )
+            user = await this.getUserModel().findOne({ id: input.id })
          }
 
          return this.toModel(user)
@@ -204,19 +204,22 @@ export class UserDatabase extends BaseDatabase {
 
          const user: any = await this.getUserModel().findOne({ id: input.id })
 
-         const friends: any = await Promise.all(
-            user?.following.map((friendId: string) => {
-               return this.getUserModel().findOne({ id: friendId })
-            })
-         )
 
          let friendList: Friend[] = []
 
-         friends.map((friend: any) => {
-            const { id, username, profilePicture } = friend
+         if (user?.friends?.length) {
+            const friends: any = await Promise.all(
+               user?.friends?.map((friendId: string) => {
+                  return this.getUserModel().findOne({ id: friendId })
+               })
+            )
 
-            friendList.push({ id, username, profilePicture })
-         })
+            friends.map((friend: any) => {
+               const { id, username, profilePicture } = friend
+
+               friendList.push({ id, username, profilePicture })
+            })
+         }
 
          return friendList
       } catch (error: any) {
