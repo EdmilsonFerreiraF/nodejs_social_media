@@ -241,13 +241,15 @@ export class UserDatabase extends BaseDatabase {
 
          const friends: any = anotherUser?.friends
 
-         if (!friends.includes(input.id)) {
+         if (!friends.includes(userId)) {
             await anotherUser?.updateOne({ $push: { friends: userId } })
             await user?.updateOne({ $push: { friends: input.id } })
          } else {
-            throw new Error("You have already followed this user")
+            throw new Error("You have already added this user")
          }
       } catch (error: any) {
+         const { message } = error
+         console.log('message', message)
          throw new Error(error.statusCode)
       }
    }
