@@ -254,6 +254,33 @@ export class UserDatabase extends BaseDatabase {
       }
    }
 
+   public async removeFriend(input: FollowUserDTO, userId: string): Promise<void> {
+      try {
+         await BaseDatabase.connect
+
+         const anotherUser: any = await this.getUserModel().findOne({ id: input.id })
+
+         if (!anotherUser) {
+            throw new Error("User not found")
+         }
+
+         const user: any = await this.getUserModel().findOne({ id: userId })
+
+         const friends: any = anotherUser?.friends
+
+         if (friends.includes(userId)) {
+            await anotherUser?.updateOne({ $pull: { friends: userId } })
+            await user?.updateOne({ $pull: { friends: input.id } })
+         } else {
+            throw new Error("You have not added this user")
+         }
+      } catch (error: any) {
+         const { message } = error
+         console.log('message', message)
+         throw new Error(error.statusCode)
+      }
+   }
+
    public async followUser(input: FollowUserDTO, userId: string): Promise<void> {
       try {
          await BaseDatabase.connect

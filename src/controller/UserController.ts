@@ -185,6 +185,27 @@ export class UserController {
       }
    }
 
+   public async removeFriend(req: Request, res: Response): Promise<void> {
+      try {
+         const { id } = req.params
+         const token = req.headers.authorization as string as string as string
+
+         const input: FollowUserDTO = {
+            id
+         }
+
+         await userBusiness.removeFriend(
+            input,
+            token
+         )
+
+         res.status(200).send("You have been removed a friend")
+      } catch (error: any) {
+         const { statusCode, message } = error
+         res.status(statusCode || 400).send({ message })
+      }
+   }
+
    public async followUser(req: Request, res: Response): Promise<void> {
       try {
          const { id } = req.params
