@@ -5,6 +5,7 @@ import morgan from 'morgan'
 
 import { bookmarkRouter } from './controller/routes/bookmarkRouter'
 import { commentRouter } from './controller/routes/commentRouter'
+import { friendRequestRouter } from './controller/routes/friendRequestRouter'
 import { postRouter } from './controller/routes/postRouter'
 import { userRouter } from './controller/routes/userRouter'
 
@@ -19,6 +20,7 @@ app.use('/user', userRouter)
 app.use('/post', postRouter)
 app.use('/bookmark', bookmarkRouter)
 app.use('/comment', commentRouter)
+app.use('/friendrequest', friendRequestRouter)
 
 const PORT = process.env.PORT || 4000
 
