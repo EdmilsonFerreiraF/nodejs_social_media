@@ -59,6 +59,26 @@ export class FriendRequestBusiness {
          throw new CustomError(error.statusCode, error.message)
       }
    }
+
+   public async getFriendRequest(token: string): Promise<any[]> {
+      try {
+         if (!token) {
+            throw new CustomError(422, "Missing token")
+         }
+
+         const isTokenValid: AuthenticationData = this.tokenGenerator.verify(token.includes("Bearer ") ? token.replace("Bearer ", "") : token)
+
+         if (!isTokenValid) {
+            throw new CustomError(409, "Invalid token")
+         }
+
+         const result: any[] = await this.bookmarkDatabase.getFriendRequest(isTokenValid.id)
+
+         return result
+      } catch (error: any) {
+         throw new CustomError(error.statusCode, error.message)
+      }
+   }
 }
 
 export default new FriendRequestBusiness(new IdGenerator(), new FriendRequestDatabase(), new TokenGenerator())

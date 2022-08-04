@@ -5,3 +5,4 @@ import friendRequestController from "../FriendRequestController"
 export const friendRequestRouter = express.Router()
 
 friendRequestRouter.post("/:to", friendRequestController.createFriendRequest)
+friendRequestRouter.get("/", friendRequestController.getFriendRequest)

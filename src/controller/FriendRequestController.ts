@@ -39,6 +39,22 @@ export class FriendRequestController {
          res.status(statusCode || 400).send({ message })
       }
    }
+
+
+   public async getFriendRequest(req: Request, res: Response): Promise<void> {
+      try {
+         const token = req.headers.authorization as string as string as string
+
+         const result = await friendRequestBusiness.getFriendRequest(
+            token
+         )
+
+         res.status(200).send(result)
+      } catch (error: any) {
+         const { statusCode, message } = error
+         res.status(statusCode || 400).send({ message })
+      }
+   }
 }
 
 export default new FriendRequestController()

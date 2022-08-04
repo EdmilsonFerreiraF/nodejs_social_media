@@ -48,6 +48,20 @@ export class FriendRequestDatabase extends BaseDatabase {
             throw new Error(error.statusCode)
         }
     }
+
+    public async getFriendRequest(userId: string): Promise<any[]> {
+        try {
+            await BaseDatabase.connect
+
+            const FriendRequestModel = model<FriendRequest>(this.tableName, this.friendRequestSchema)
+
+            const friendRequests: any = await FriendRequestModel.find({ to: userId })
+
+            return friendRequests
+        } catch (error: any) {
+            throw new Error(error.statusCode)
+        }
+    }
 }
 
 export default new FriendRequestDatabase()
