@@ -223,7 +223,7 @@ export class UserBusiness {
       }
    }
 
-   public async addFriend(input: FollowUserDTO, token: string): Promise<void> {
+   public async addFriend(input: FollowUserDTO, token: string): Promise<any> {
       try {
          if (!input.id) {
             throw new CustomError(417, "Missing input")
@@ -243,13 +243,15 @@ export class UserBusiness {
             throw new CustomError(422, "Only admins can access this feature")
          }
 
-         await this.userDatabase.addFriend(input, isTokenValid.id)
+         const result = await this.userDatabase.addFriend(input, isTokenValid.id)
+
+         return result
       } catch (error: any) {
          throw new CustomError(error.statusCode, error.message)
       }
    }
 
-   public async removeFriend(input: FollowUserDTO, token: string): Promise<void> {
+   public async removeFriend(input: FollowUserDTO, token: string): Promise<any> {
       try {
          if (!input.id) {
             throw new CustomError(417, "Missing input")
@@ -269,7 +271,9 @@ export class UserBusiness {
             throw new CustomError(422, "Only admins can access this feature")
          }
 
-         await this.userDatabase.removeFriend(input, isTokenValid.id)
+         const result = await this.userDatabase.removeFriend(input, isTokenValid.id)
+
+         return result
       } catch (error: any) {
          throw new CustomError(error.statusCode, error.message)
       }

@@ -173,12 +173,12 @@ export class UserController {
             id
          }
 
-         await userBusiness.addFriend(
+         const result = await userBusiness.addFriend(
             input,
             token
          )
 
-         res.status(200).send("You have been added a friend")
+         res.status(200).send(result)
       } catch (error: any) {
          const { statusCode, message } = error
          res.status(statusCode || 400).send({ message })
@@ -194,12 +194,12 @@ export class UserController {
             id
          }
 
-         await userBusiness.removeFriend(
+         const result = await userBusiness.removeFriend(
             input,
             token
          )
 
-         res.status(200).send("You have been removed a friend")
+         res.status(200).send(result)
       } catch (error: any) {
          const { statusCode, message } = error
          res.status(statusCode || 400).send({ message })

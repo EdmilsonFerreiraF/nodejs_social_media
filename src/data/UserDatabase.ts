@@ -221,13 +221,14 @@ export class UserDatabase extends BaseDatabase {
             })
          }
 
+         console.log('friendList', friendList)
          return friendList
       } catch (error: any) {
          throw new Error(error.statusCode)
       }
    }
 
-   public async addFriend(input: FollowUserDTO, userId: string): Promise<void> {
+   public async addFriend(input: FollowUserDTO, userId: string): Promise<any> {
       try {
          await BaseDatabase.connect
 
@@ -247,6 +248,10 @@ export class UserDatabase extends BaseDatabase {
          } else {
             throw new Error("You have already added this user")
          }
+
+         const result = input.id
+
+         return result
       } catch (error: any) {
          const { message } = error
          console.log('message', message)
@@ -254,7 +259,7 @@ export class UserDatabase extends BaseDatabase {
       }
    }
 
-   public async removeFriend(input: FollowUserDTO, userId: string): Promise<void> {
+   public async removeFriend(input: FollowUserDTO, userId: string): Promise<any> {
       try {
          await BaseDatabase.connect
 
@@ -274,6 +279,10 @@ export class UserDatabase extends BaseDatabase {
          } else {
             throw new Error("You have not added this user")
          }
+
+         const result = input.id
+
+         return result
       } catch (error: any) {
          const { message } = error
          console.log('message', message)
